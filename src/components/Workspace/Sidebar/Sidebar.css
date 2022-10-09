@@ -1,0 +1,39 @@
+div.sidebar-container {
+  height: calc(100vh - 106px);
+  position: absolute;
+  display: flex;
+  flex-direction: row;
+}
+
+div.sidebar-panel {
+  width: 350px;
+  background-color: #000000;
+}
+
+div.sidebar-panel.sidebar-panel-active {
+  transform: translateX(0);
+  display: inherit;
+}
+
+div.sidebar-panel.sidebar-panel-hidden {
+  transform: translate(-350px);
+  display: none;
+}
+
+button.sidebar-toggler {
+  margin: 3rem 0 3rem;
+  width: 1.5rem;
+  height: auto;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  background-color: #000000;
+  border: none;
+  border-radius: 0 75px 75px 0;
+  cursor: pointer;
+}
+
+img.sidebar-toggler-icon-reversed {
+  transform: rotate(180deg);
+}
