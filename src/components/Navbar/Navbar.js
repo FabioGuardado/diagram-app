@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 
+import Divider from '../Divider/Divider';
+
 import './Navbar.css';
 
 const Navbar = () => {
@@ -58,7 +60,8 @@ const Navbar = () => {
           </div>
         </div>
       </nav>
-      <div className="navbar-divider"></div>
+
+      <Divider />
     </>
   );
 };
