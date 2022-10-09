@@ -38,6 +38,7 @@ ul.navbar-submenu {
   top: 60px;
   background-color: #3c3c3c;
   width: 160px;
+  z-index: 5;
 }
 
 ul.navbar-submenu > li {
