@@ -8,13 +8,14 @@ const Canvas = () => {
   let contexto = null;
 
   const cuadros = [
-    { x: 84, y: 133, w: 200, h: 200, r1: [] },
-    { x: 223, y: 63, w: 100, h: 100, r1: [] },
-    { x: 499, y: 455, w: 100, h: 100, r1: [] },
-    { x: 402, y: 73, w: 100, h: 100, r1: [] },
-    { x: 84, y: 300, w: 100, h: 100, r1: [] },
-    { x: 100, y: 440, w: 100, h: 100, r1: [] },
-    { x: 100, y: 440, w: 50, h: 50, r1: [] },
+    { x: 84, y: 133, w: 100, h: 100, r1: [], text: '0' },
+    { x: 223, y: 63, w: 100, h: 100, r1: [], text: '1' },
+    { x: 499, y: 455, w: 100, h: 100, r1: [], text: '2' },
+    { x: 402, y: 73, w: 100, h: 100, r1: [], text: '3' },
+    { x: 84, y: 300, w: 100, h: 100, r1: [], text: '4' },
+    { x: 100, y: 440, w: 100, h: 100, r1: [], text: '5' },
+    { x: 550, y: 40, w: 100, h: 100, r1: [], text: '6' },
+    { x: 700, y: 80, w: 100, h: 100, r1: [], text: '7' },
   ];
 
   let estaPresionado = false;
@@ -46,28 +47,41 @@ const Canvas = () => {
     );
 
     cuadros[0].r1.push(cuadros[2]);
-    cuadros[0].r1.push(cuadros[4]);
+    cuadros[4].r1.push(cuadros[2]);
     cuadros[1].r1.push(cuadros[2]);
     cuadros[2].r1.push(cuadros[3]);
-    cuadros[4].r1.push(cuadros[5]);
-    cuadros[6].r1.push(cuadros[5]);
-    cuadros[6].r1.push(cuadros[2]);
+    cuadros[5].r1.push(cuadros[2]);
+    // cuadros[6].r1.push(cuadros[5]);
+    // cuadros[6].r1.push(cuadros[2]);
 
-    cuadros.map(info => drawFillRect(info));
+    const image = new Image(60, 45); // Using optional size for image
+    image.onload = drawImageActualSize; // Draw when image has loaded
+    image.src = 'pc.png';
+
+    cuadros.map(info => dibujarCuadro(info));
   };
 
-  // Funcion para dibujar el cuadro
-  const drawFillRect = (info, style = {}) => {
-    const { x, y, w, h, r1 } = info;
-    const { backgroundColor = 'blue' } = style;
+  function drawImageActualSize() {
+    // Will draw the image as 300x227, ignoring the custom size of 60x45
+    // given in the constructor
+    contexto.drawImage(this, 0, 0);
 
+    // To use the custom size we'll have to specify the scale parameters
+    // using the element's width and height properties - lets draw one
+    // on top in the corner:
+    contexto.drawImage(this, 0, 0, this.width, this.height);
+  }
+
+  // Funcion para dibujar el cuadro
+  const dibujarCuadro = info => {
+    const { x, y, w, h, r1, text } = info;
     contexto.beginPath();
     contexto.lineWidth = '2';
-    contexto.strokeStyle = backgroundColor;
-    contexto.scale(1, 1);
+    contexto.strokeStyle = 'blue';
     contexto.rect(x, y, w, h);
     contexto.stroke();
 
+    dibujarTexto({ x, y, text });
     r1.map(cuadro => calcularLinea(info, cuadro));
   };
 
@@ -92,17 +106,23 @@ const Canvas = () => {
     contexto.beginPath();
     contexto.moveTo(origenX, origenY);
     contexto.lineTo(destinoX, destinoY);
-    contexto.lineWidth = '1.6';
+    contexto.lineWidth = '1.2';
     contexto.cap = 'round';
     contexto.stroke();
+  };
+
+  const dibujarTexto = punto => {
+    const { x, y, text } = punto;
+    contexto.font = '30px serif';
+    contexto.fillStyle = 'black';
+    contexto.fillText(text, x, y - 5);
   };
 
   // Identificar el evento clic en la figura
   const superficieFigura = (x, y) => {
     let estaEncima = null;
 
-    for (let i = 0; i < cuadros.length; i++) {
-      const cuadro = cuadros[i];
+    cuadros.forEach(cuadro => {
       if (
         x >= cuadro.x &&
         x <= cuadro.x + cuadro.w &&
@@ -111,9 +131,8 @@ const Canvas = () => {
       ) {
         objetoApuntado = cuadro;
         estaEncima = true;
-        break;
       }
-    }
+    });
     return estaEncima;
   };
 
@@ -146,15 +165,18 @@ const Canvas = () => {
   };
 
   return (
-    <canvas
-      ref={canvas}
-      id="canvas"
-      className="workspace-canvas"
-      onMouseDown={hacerClic}
-      onMouseMove={moverMouse}
-      onMouseUp={levantarClic}
-      onMouseOut={sobrepasarMouse}
-    ></canvas>
+    <>
+      <img id="source" src="pic_the_scream.jpg" style={{ display: 'none' }} />
+      <canvas
+        ref={canvas}
+        id="canvas"
+        className="workspace-canvas"
+        onMouseDown={hacerClic}
+        onMouseMove={moverMouse}
+        onMouseUp={levantarClic}
+        onMouseOut={sobrepasarMouse}
+      ></canvas>
+    </>
   );
 };
 
