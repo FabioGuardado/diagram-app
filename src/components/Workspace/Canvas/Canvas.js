@@ -2,6 +2,8 @@ import React, { useRef, useEffect } from 'react';
 
 import './Canvas.css';
 
+import nombreDeLaImagen from '../../../img/pic_the_scream.jpg';
+
 const Canvas = () => {
   const canvas = useRef();
   // contexto del canvas
@@ -166,7 +168,7 @@ const Canvas = () => {
 
   return (
     <>
-      <img id="source" src="pic_the_scream.jpg" style={{ display: 'none' }} />
+      <img id="source" src={nombreDeLaImagen} style={{ display: 'none' }} />
       <canvas
         ref={canvas}
         id="canvas"
