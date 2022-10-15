@@ -5,11 +5,12 @@ import ToolButton from './ToolButton';
 import './Toolsbar.css';
 
 const herramientas = [
-  { nombre: 'Deshacer', icono: '' },
-  { nombre: 'Rehacer', icono: '' },
-  { nombre: 'Eliminar', icono: '' },
-  { nombre: 'Acercar', icono: '' },
-  { nombre: 'Alejar', icono: '' },
+  { nombre: 'Deshacer', icono: 'deshacer.png' },
+  { nombre: 'Rehacer', icono: 'rehacer.png' },
+  { nombre: 'Eliminar', icono: 'eliminar.png' },
+  { nombre: 'Duplicar', icono: 'duplicar.png' },
+  { nombre: 'Acercar', icono: 'zoom-in.png' },
+  { nombre: 'Alejar', icono: 'zoom-out.png' },
 ];
 
 const Toolsbar = () => {
