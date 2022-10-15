@@ -17,7 +17,9 @@ const Navbar = () => {
     <>
       <nav className="navbar-container">
         <div className="navbar-content">
-          <div className="navbar-logo">LOGO</div>
+          <div className="navbar-logo">
+            <img src="/img/navbar_logo.png" height={60} />
+          </div>
           <div className="navbar-menu">
             <div className="navbar-menu-element">
               <div className="navbar-button-container">
