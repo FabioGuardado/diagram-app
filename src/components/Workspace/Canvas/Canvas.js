@@ -129,6 +129,7 @@ const Canvas = () => {
     inicioY = mouseY;
     objetoApuntado.x += dx;
     objetoApuntado.y += dy;
+    dibujar();
   };
 
   const levantarClic = e => {
