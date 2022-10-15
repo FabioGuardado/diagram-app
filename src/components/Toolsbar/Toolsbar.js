@@ -9,6 +9,7 @@ const herramientas = [
   { nombre: 'Rehacer', icono: 'rehacer.png' },
   { nombre: 'Eliminar', icono: 'eliminar.png' },
   { nombre: 'Duplicar', icono: 'duplicar.png' },
+  { nombre: 'Texto', icono: 'texto.png' },
   { nombre: 'Acercar', icono: 'zoom-in.png' },
   { nombre: 'Alejar', icono: 'zoom-out.png' },
 ];
