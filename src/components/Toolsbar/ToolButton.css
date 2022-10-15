@@ -1,0 +1,11 @@
+.toolsbar-button {
+  background-color: transparent;
+  padding: 0.3rem 0.5rem;
+  margin-right: 1rem;
+  border: none;
+  cursor: pointer;
+}
+
+.toolsbar-button:hover {
+  background-color: #575757;
+}

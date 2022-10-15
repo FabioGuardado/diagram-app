@@ -1,0 +1,7 @@
+div.workspace-container {
+  width: 100vw;
+  height: calc(100% - 106px);
+  position: relative;
+  background-color: rgb(203, 214, 232) !important;
+  z-index: 2;
+}
