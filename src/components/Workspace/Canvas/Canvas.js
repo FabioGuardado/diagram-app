@@ -1,13 +1,18 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useContext } from 'react';
+
+import CanvasContext from '../../../context/CanvasContext/CanvasContext';
 
 import './Canvas.css';
 
 const Canvas = () => {
   const canvas = useRef();
+  const contexto = useRef(null);
+  const { cuadros, modificarCuadro, seleccionarCuadro } =
+    useContext(CanvasContext);
   // contexto del canvas
-  let contexto = null;
+  console.log(contexto);
 
-  const cuadros = [
+  /* const cuadros = [
     { x: 84, y: 133, w: 200, h: 200, r1: [] },
     { x: 223, y: 63, w: 100, h: 100, r1: [] },
     { x: 499, y: 455, w: 100, h: 100, r1: [] },
@@ -15,7 +20,7 @@ const Canvas = () => {
     { x: 84, y: 300, w: 100, h: 100, r1: [] },
     { x: 100, y: 440, w: 100, h: 100, r1: [] },
     { x: 100, y: 440, w: 50, h: 50, r1: [] },
-  ];
+  ]; */
 
   let estaPresionado = false;
   let objetoApuntado = null;
@@ -29,30 +34,21 @@ const Canvas = () => {
     elementoCanvas.width = elementoCanvas.clientWidth;
     elementoCanvas.height = elementoCanvas.clientHeight;
     // Obtenemos el contexto del canvas
-    contexto = elementoCanvas.getContext('2d');
+    contexto.current = elementoCanvas.getContext('2d');
   }, []);
 
   useEffect(() => {
-    dibujar();
-  }, []);
+    if (contexto.current) dibujar();
+  }, [cuadros]);
 
   // Dibujar los cuadros
   const dibujar = () => {
-    contexto.clearRect(
+    contexto.current.clearRect(
       0,
       0,
       canvas.current.clientWidth,
       canvas.current.clientHeight,
     );
-
-    cuadros[0].r1.push(cuadros[2]);
-    cuadros[0].r1.push(cuadros[4]);
-    cuadros[1].r1.push(cuadros[2]);
-    cuadros[2].r1.push(cuadros[3]);
-    cuadros[4].r1.push(cuadros[5]);
-    cuadros[6].r1.push(cuadros[5]);
-    cuadros[6].r1.push(cuadros[2]);
-
     cuadros.map(info => drawFillRect(info));
   };
 
@@ -61,14 +57,14 @@ const Canvas = () => {
     const { x, y, w, h, r1 } = info;
     const { backgroundColor = 'blue' } = style;
 
-    contexto.beginPath();
-    contexto.lineWidth = '2';
-    contexto.strokeStyle = backgroundColor;
-    contexto.scale(1, 1);
-    contexto.rect(x, y, w, h);
-    contexto.stroke();
+    contexto.current.beginPath();
+    contexto.current.lineWidth = '2';
+    contexto.current.strokeStyle = backgroundColor;
+    contexto.current.scale(1, 1);
+    contexto.current.rect(x, y, w, h);
+    contexto.current.stroke();
 
-    r1.map(cuadro => calcularLinea(info, cuadro));
+    if (r1) r1.map(cuadro => calcularLinea(info, cuadro));
   };
 
   const calcularLinea = (origen, destino) => {
@@ -88,13 +84,13 @@ const Canvas = () => {
 
   const dibujarLinea = linea => {
     const { origenX, origenY, destinoX, destinoY } = linea;
-    contexto.strokeStyle = 'red';
-    contexto.beginPath();
-    contexto.moveTo(origenX, origenY);
-    contexto.lineTo(destinoX, destinoY);
-    contexto.lineWidth = '1.6';
-    contexto.cap = 'round';
-    contexto.stroke();
+    contexto.current.strokeStyle = 'red';
+    contexto.current.beginPath();
+    contexto.current.moveTo(origenX, origenY);
+    contexto.current.lineTo(destinoX, destinoY);
+    contexto.current.lineWidth = '1.6';
+    contexto.current.cap = 'round';
+    contexto.current.stroke();
   };
 
   // Identificar el evento clic en la figura
@@ -133,10 +129,15 @@ const Canvas = () => {
     inicioY = mouseY;
     objetoApuntado.x += dx;
     objetoApuntado.y += dy;
-    dibujar();
   };
 
   const levantarClic = e => {
+    if (objetoApuntado) {
+      console.log({ cuadros, objetoApuntado });
+      seleccionarCuadro(objetoApuntado);
+      modificarCuadro(objetoApuntado);
+    }
+
     objetoApuntado = null;
     estaPresionado = false;
   };
