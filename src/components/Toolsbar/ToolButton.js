@@ -7,7 +7,7 @@ const ToolButton = ({ tool }) => {
 
   return (
     <button className="toolsbar-button" onClick={funcion}>
-      {nombre}
+      <img src={`/img/tools/${icono}`} height="22px" />
     </button>
   );
 };

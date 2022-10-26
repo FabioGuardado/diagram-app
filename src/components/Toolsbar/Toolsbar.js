@@ -31,12 +31,13 @@ const Toolsbar = () => {
   };
 
   const herramientas = [
-    { nombre: 'Deshacer', icono: '' },
-    { nombre: 'Rehacer', icono: '' },
-    { nombre: 'Eliminar', icono: '', funcion: handleEliminar },
-    { nombre: 'Duplicar', icono: '', funcion: handleDuplicar },
-    { nombre: 'Acercar', icono: '' },
-    { nombre: 'Alejar', icono: '' },
+    { nombre: 'Deshacer', icono: 'deshacer.png' },
+    { nombre: 'Rehacer', icono: 'rehacer.png' },
+    { nombre: 'Eliminar', icono: 'eliminar.png', funcion: handleEliminar },
+    { nombre: 'Duplicar', icono: 'duplicar.png', funcion: handleDuplicar },
+    { nombre: 'Texto', icono: 'texto.png' },
+    { nombre: 'Acercar', icono: 'zoom-in.png' },
+    { nombre: 'Alejar', icono: 'zoom-out.png' },
   ];
   return (
     <>

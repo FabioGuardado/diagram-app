@@ -97,8 +97,7 @@ const Canvas = () => {
   const superficieFigura = (x, y) => {
     let estaEncima = null;
 
-    for (let i = 0; i < cuadros.length; i++) {
-      const cuadro = cuadros[i];
+    cuadros.forEach(cuadro => {
       if (
         x >= cuadro.x &&
         x <= cuadro.x + cuadro.w &&
@@ -107,9 +106,8 @@ const Canvas = () => {
       ) {
         objetoApuntado = cuadro;
         estaEncima = true;
-        break;
       }
-    }
+    });
     return estaEncima;
   };
 
