@@ -1,4 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+
+import { v4 as uuid } from 'uuid';
+
+import CanvasContext from '../../../context/CanvasContext/CanvasContext';
 
 import openSidebarIcon from '../../../img/open-sidebar.png';
 
@@ -26,8 +30,22 @@ const elementos = [
 
 const Sidebar = () => {
   const [isSidebarOpened, setIsSidebarOpened] = useState(false);
+  const { crearCuadro } = useContext(CanvasContext);
 
   const toggleSidebar = () => setIsSidebarOpened(!isSidebarOpened);
+
+  const handleClick = tipoDeDibujo => {
+    const nuevoCuadro = {
+      id: uuid(),
+      tipo: tipoDeDibujo,
+      x: 86,
+      y: 138,
+      w: 200,
+      h: 200,
+    };
+    crearCuadro(nuevoCuadro);
+    toggleSidebar();
+  };
 
   return (
     <div className="sidebar-container">

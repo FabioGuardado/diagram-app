@@ -68,3 +68,9 @@ button.sidebar-toggler {
 img.sidebar-toggler-icon-reversed {
   transform: rotate(180deg);
 }
+
+button.crear-cuadro {
+  height: 200px;
+  width: 200px;
+  background-color: aqua;
+}
