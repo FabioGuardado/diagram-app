@@ -59,8 +59,6 @@ const Canvas = () => {
     cuadros[1].r1.push(cuadros[2]);
     cuadros[2].r1.push(cuadros[3]);
     cuadros[5].r1.push(cuadros[2]);
-    cuadros[6].r1.push(cuadros[7]);
-    // cuadros[6].r1.push(cuadros[2]);
 
     cuadros.map(info => dibujarCuadro(info, contexto));
   };
