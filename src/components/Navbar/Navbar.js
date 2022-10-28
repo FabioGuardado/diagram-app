@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 
+import { jsPDF } from 'jspdf';
+
 import Divider from '../Divider/Divider';
 
 import './Navbar.css';
 
 const Navbar = () => {
+  const canvas = document.getElementById('canvas');
   const [isMenuArchivoOpened, setIsMenuArchivoOpened] = useState(false);
   const [isMenuEditarOpened, setIsMenuEditarOpened] = useState(false);
 
@@ -12,6 +15,42 @@ const Navbar = () => {
     setIsMenuArchivoOpened(!isMenuArchivoOpened);
   const toggleMenuEditarOpened = () =>
     setIsMenuEditarOpened(!isMenuEditarOpened);
+
+  const guardarComoJPG = () => {
+    const context = canvas.getContext('2d');
+    context.globalCompositeOperation = 'destination-over';
+    context.fillStyle = '#cad5e8';
+    context.fillRect(0, 0, canvas.width, canvas.height);
+
+    const imageURL = canvas.toDataURL('image/jpg');
+
+    const element = document.createElement('a');
+    element.href = imageURL;
+    element.download = 'draw.jpg';
+
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+  };
+
+  const guardarComoPDF = () => {
+    const context = canvas.getContext('2d');
+    context.globalCompositeOperation = 'destination-over';
+    context.fillStyle = '#cad5e8';
+    context.fillRect(0, 0, canvas.width, canvas.height);
+
+    const imageURL = canvas.toDataURL('image/jpg');
+
+    const doc = new jsPDF({
+      orientation: 'landscape',
+    });
+    const imgProps = doc.getImageProperties(imageURL);
+    const pdfWidth = doc.internal.pageSize.getWidth() - 10;
+    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width - 10;
+
+    doc.addImage(imageURL, 5, 5, pdfWidth, pdfHeight);
+    doc.save('draw.pdf');
+  };
 
   return (
     <>
@@ -35,8 +74,12 @@ const Navbar = () => {
                   isMenuArchivoOpened ? 'submenu-active' : 'submenu-hidden'
                 }`}
               >
-                <li>Guardar como PDF</li>
-                <li>Guardar como JPG</li>
+                <li>
+                  <a onClick={guardarComoPDF}>Guardar como PDF</a>
+                </li>
+                <li>
+                  <a onClick={guardarComoJPG}>Guardar como JPG</a>
+                </li>
               </ul>
             </div>
 
