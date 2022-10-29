@@ -32,6 +32,11 @@ const CanvasReducer = (estado, accion) => {
         ...estado,
         cuadroSeleccionado: accion.payload,
       };
+    case 'MODIFICAR_ZOOM':
+      return {
+        ...estado,
+        nivelDeZoom: accion.payload,
+      };
     default:
       return estado;
   }

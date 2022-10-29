@@ -5,6 +5,7 @@ import CanvasReducer from './CanvasReducer';
 const ESTADO_INICIAL = {
   cuadros: [],
   cuadroSeleccionado: null,
+  nivelDeZoom: 1,
 };
 
 const CanvasProvider = ({ children }) => {
@@ -31,6 +32,10 @@ const CanvasProvider = ({ children }) => {
     dispatch({ tipo: 'SELECCIONAR_CUADRO', payload: cuadro });
   };
 
+  const modificarZoom = nuevoNivelDeZoom => {
+    dispatch({ tipo: 'MODIFICAR_ZOOM', payload: nuevoNivelDeZoom });
+  };
+
   return (
     <CanvasContext.Provider
       value={{
@@ -40,6 +45,7 @@ const CanvasProvider = ({ children }) => {
         modificarCuadro,
         duplicarCuadro,
         seleccionarCuadro,
+        modificarZoom,
       }}
     >
       {children}

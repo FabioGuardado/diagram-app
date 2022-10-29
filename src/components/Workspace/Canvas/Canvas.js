@@ -7,10 +7,9 @@ import './Canvas.css';
 const Canvas = () => {
   const canvas = useRef();
   const contexto = useRef(null);
-  const { cuadros, modificarCuadro, seleccionarCuadro } =
+  const { cuadros, nivelDeZoom, modificarCuadro, seleccionarCuadro } =
     useContext(CanvasContext);
   // contexto del canvas
-  console.log(contexto);
 
   /* const cuadros = [
     { x: 84, y: 133, w: 200, h: 200, r1: [] },
@@ -39,10 +38,12 @@ const Canvas = () => {
 
   useEffect(() => {
     if (contexto.current) dibujar();
-  }, [cuadros]);
+  }, [cuadros, nivelDeZoom]);
 
   // Dibujar los cuadros
   const dibujar = () => {
+    contexto.current.save();
+    contexto.current.scale(nivelDeZoom, nivelDeZoom);
     contexto.current.clearRect(
       0,
       0,
@@ -50,6 +51,7 @@ const Canvas = () => {
       canvas.current.clientHeight,
     );
     cuadros.map(info => drawFillRect(info));
+    contexto.current.restore();
   };
 
   // Funcion para dibujar el cuadro
@@ -60,7 +62,6 @@ const Canvas = () => {
     contexto.current.beginPath();
     contexto.current.lineWidth = '2';
     contexto.current.strokeStyle = backgroundColor;
-    contexto.current.scale(1, 1);
     contexto.current.rect(x, y, w, h);
     contexto.current.stroke();
 
@@ -132,7 +133,6 @@ const Canvas = () => {
 
   const levantarClic = e => {
     if (objetoApuntado) {
-      console.log({ cuadros, objetoApuntado });
       seleccionarCuadro(objetoApuntado);
       modificarCuadro(objetoApuntado);
     }
