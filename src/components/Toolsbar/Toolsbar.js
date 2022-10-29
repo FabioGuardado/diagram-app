@@ -9,9 +9,17 @@ import CanvasContext from '../../context/CanvasContext/CanvasContext';
 
 import './Toolsbar.css';
 
+const ZOOM_MAX = 2;
+const ZOOM_MIN = 0.4;
+
 const Toolsbar = () => {
-  const { cuadroSeleccionado, eliminarCuadro, duplicarCuadro } =
-    useContext(CanvasContext);
+  const {
+    cuadroSeleccionado,
+    nivelDeZoom,
+    eliminarCuadro,
+    duplicarCuadro,
+    modificarZoom,
+  } = useContext(CanvasContext);
 
   const handleEliminar = () => {
     if (cuadroSeleccionado) eliminarCuadro();
@@ -30,14 +38,28 @@ const Toolsbar = () => {
     }
   };
 
+  const handleZoomIn = () => {
+    if (nivelDeZoom < ZOOM_MAX) {
+      const nuevoNivelDeZoom = nivelDeZoom + 0.2;
+      modificarZoom(Number(nuevoNivelDeZoom.toFixed(1)));
+    }
+  };
+
+  const handleZoomOut = () => {
+    if (nivelDeZoom > ZOOM_MIN) {
+      const nuevoNivelDeZoom = nivelDeZoom - 0.2;
+      modificarZoom(Number(nuevoNivelDeZoom.toFixed(1)));
+    }
+  };
+
   const herramientas = [
     { nombre: 'Deshacer', icono: 'deshacer.png' },
     { nombre: 'Rehacer', icono: 'rehacer.png' },
     { nombre: 'Eliminar', icono: 'eliminar.png', funcion: handleEliminar },
     { nombre: 'Duplicar', icono: 'duplicar.png', funcion: handleDuplicar },
     { nombre: 'Texto', icono: 'texto.png' },
-    { nombre: 'Acercar', icono: 'zoom-in.png' },
-    { nombre: 'Alejar', icono: 'zoom-out.png' },
+    { nombre: 'Acercar', icono: 'zoom-in.png', funcion: handleZoomIn },
+    { nombre: 'Alejar', icono: 'zoom-out.png', funcion: handleZoomOut },
   ];
   return (
     <>
