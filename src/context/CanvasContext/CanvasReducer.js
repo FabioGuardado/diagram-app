@@ -4,7 +4,6 @@ const CanvasReducer = (estado, accion) => {
       return {
         ...estado,
         cuadros: [...estado.cuadros, accion.payload],
-        redibujarCuadros: true,
       };
     case 'ELIMINAR_DIBUJO':
       return {
@@ -13,7 +12,6 @@ const CanvasReducer = (estado, accion) => {
           cuadro => cuadro.id !== estado.cuadroSeleccionado.id,
         ),
         cuadroSeleccionado: null,
-        redibujarCuadros: true,
       };
     case 'MODIFICAR_CUADRO':
       return {
@@ -36,6 +34,11 @@ const CanvasReducer = (estado, accion) => {
       return {
         ...estado,
         nivelDeZoom: accion.payload,
+      };
+    case 'RESTAURAR_ESTADO':
+      return {
+        ...estado,
+        cuadros: accion.payload,
       };
     default:
       return estado;

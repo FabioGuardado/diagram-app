@@ -24,7 +24,6 @@ const CanvasProvider = ({ children }) => {
   };
 
   const duplicarCuadro = cuadroDuplicado => {
-    console.log(cuadroDuplicado);
     dispatch({ tipo: 'DUPLICAR_CUADRO', payload: cuadroDuplicado });
   };
 
@@ -34,6 +33,10 @@ const CanvasProvider = ({ children }) => {
 
   const modificarZoom = nuevoNivelDeZoom => {
     dispatch({ tipo: 'MODIFICAR_ZOOM', payload: nuevoNivelDeZoom });
+  };
+
+  const restaurarEstado = estado => {
+    dispatch({ tipo: 'RESTAURAR_ESTADO', payload: estado });
   };
 
   return (
@@ -46,6 +49,7 @@ const CanvasProvider = ({ children }) => {
         duplicarCuadro,
         seleccionarCuadro,
         modificarZoom,
+        restaurarEstado,
       }}
     >
       {children}
