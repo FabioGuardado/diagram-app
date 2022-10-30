@@ -8,8 +8,7 @@ import './Workspace.css';
 import useHistoryLogger from '../../hooks/useHistoryLogger';
 
 const Workspace = () => {
-  const { historial, actualizarHistorial, retroceder, adelantar } =
-    useHistoryLogger();
+  const { actualizarHistorial, retroceder, adelantar } = useHistoryLogger();
   return (
     <>
       <Toolsbar

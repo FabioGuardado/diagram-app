@@ -49,7 +49,7 @@ const useHistoryLogger = () => {
     setPosicionActual(posicionActual + 1);
   };
 
-  return { historial, actualizarHistorial, retroceder, adelantar };
+  return { actualizarHistorial, retroceder, adelantar };
 };
 
 export default useHistoryLogger;
