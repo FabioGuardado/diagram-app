@@ -12,8 +12,13 @@ import './Toolsbar.css';
 const ZOOM_MAX = 2;
 const ZOOM_MIN = 0.4;
 
-const Toolsbar = () => {
+const Toolsbar = ({
+  actualizarHistorial = () => {},
+  retroceder = () => {},
+  adelantar = () => {},
+}) => {
   const {
+    cuadros,
     cuadroSeleccionado,
     nivelDeZoom,
     eliminarCuadro,
@@ -22,7 +27,12 @@ const Toolsbar = () => {
   } = useContext(CanvasContext);
 
   const handleEliminar = () => {
-    if (cuadroSeleccionado) eliminarCuadro();
+    if (cuadroSeleccionado) {
+      eliminarCuadro();
+      actualizarHistorial(
+        cuadros.filter(cuadro => cuadro.id !== cuadroSeleccionado.id),
+      );
+    }
   };
 
   const handleDuplicar = () => {
@@ -35,6 +45,7 @@ const Toolsbar = () => {
       };
 
       duplicarCuadro(cuadroDuplicado);
+      actualizarHistorial([...cuadros, cuadroDuplicado]);
     }
   };
 
@@ -53,8 +64,8 @@ const Toolsbar = () => {
   };
 
   const herramientas = [
-    { nombre: 'Deshacer', icono: 'deshacer.png' },
-    { nombre: 'Rehacer', icono: 'rehacer.png' },
+    { nombre: 'Deshacer', icono: 'deshacer.png', funcion: retroceder },
+    { nombre: 'Rehacer', icono: 'rehacer.png', funcion: adelantar },
     { nombre: 'Eliminar', icono: 'eliminar.png', funcion: handleEliminar },
     { nombre: 'Duplicar', icono: 'duplicar.png', funcion: handleDuplicar },
     { nombre: 'Texto', icono: 'texto.png' },

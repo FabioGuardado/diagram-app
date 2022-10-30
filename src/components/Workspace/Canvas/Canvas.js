@@ -4,7 +4,7 @@ import CanvasContext from '../../../context/CanvasContext/CanvasContext';
 
 import './Canvas.css';
 
-const Canvas = () => {
+const Canvas = ({ actualizarHistorial = () => {} }) => {
   const canvas = useRef();
   const contexto = useRef(null);
   const { cuadros, nivelDeZoom, modificarCuadro, seleccionarCuadro } =
@@ -43,13 +43,13 @@ const Canvas = () => {
   // Dibujar los cuadros
   const dibujar = () => {
     contexto.current.save();
-    contexto.current.scale(nivelDeZoom, nivelDeZoom);
     contexto.current.clearRect(
       0,
       0,
       canvas.current.clientWidth,
       canvas.current.clientHeight,
     );
+    contexto.current.scale(nivelDeZoom, nivelDeZoom);
     cuadros.map(info => drawFillRect(info));
     contexto.current.restore();
   };
@@ -134,6 +134,7 @@ const Canvas = () => {
   const levantarClic = e => {
     if (objetoApuntado) {
       seleccionarCuadro(objetoApuntado);
+      actualizarHistorial(cuadros);
       modificarCuadro(objetoApuntado);
     }
 
