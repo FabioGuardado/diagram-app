@@ -3,23 +3,13 @@ import React, { useRef, useEffect, useContext } from 'react';
 import CanvasContext from '../../../context/CanvasContext/CanvasContext';
 
 import './Canvas.css';
+import { dibujarCuadro } from './canvas.dibujar';
 
 const Canvas = ({ actualizarHistorial = () => {} }) => {
   const canvas = useRef();
   const contexto = useRef(null);
   const { cuadros, nivelDeZoom, modificarCuadro, seleccionarCuadro } =
     useContext(CanvasContext);
-  // contexto del canvas
-
-  /* const cuadros = [
-    { x: 84, y: 133, w: 200, h: 200, r1: [] },
-    { x: 223, y: 63, w: 100, h: 100, r1: [] },
-    { x: 499, y: 455, w: 100, h: 100, r1: [] },
-    { x: 402, y: 73, w: 100, h: 100, r1: [] },
-    { x: 84, y: 300, w: 100, h: 100, r1: [] },
-    { x: 100, y: 440, w: 100, h: 100, r1: [] },
-    { x: 100, y: 440, w: 50, h: 50, r1: [] },
-  ]; */
 
   let estaPresionado = false;
   let objetoApuntado = null;
@@ -49,64 +39,31 @@ const Canvas = ({ actualizarHistorial = () => {} }) => {
       canvas.current.clientWidth,
       canvas.current.clientHeight,
     );
+
+    if (cuadros[0].r1.length === 0) cuadros[0].r1.push(cuadros[2]);
+    if (cuadros[1].r1.length === 0) cuadros[1].r1.push(cuadros[2]);
     contexto.current.scale(nivelDeZoom, nivelDeZoom);
-    cuadros.map(info => drawFillRect(info));
+
+    cuadros.map(info => dibujarCuadro(info, contexto.current));
     contexto.current.restore();
-  };
-
-  // Funcion para dibujar el cuadro
-  const drawFillRect = (info, style = {}) => {
-    const { x, y, w, h, r1 } = info;
-    const { backgroundColor = 'blue' } = style;
-
-    contexto.current.beginPath();
-    contexto.current.lineWidth = '2';
-    contexto.current.strokeStyle = backgroundColor;
-    contexto.current.rect(x, y, w, h);
-    contexto.current.stroke();
-
-    if (r1) r1.map(cuadro => calcularLinea(info, cuadro));
-  };
-
-  const calcularLinea = (origen, destino) => {
-    if (!destino) return;
-
-    const { x: forma1X, y: forma1Y, w: origenW, h: origenH } = origen;
-    const { x: forma2X, y: forma2Y, w: destinoW, h: destinoH } = destino;
-    const linea = {
-      origenX: origenW / 2 + forma1X,
-      origenY: origenH / 2 + forma1Y,
-      destinoX: destinoW / 2 + forma2X,
-      destinoY: destinoH / 2 + forma2Y,
-    };
-
-    dibujarLinea(linea);
-  };
-
-  const dibujarLinea = linea => {
-    const { origenX, origenY, destinoX, destinoY } = linea;
-    contexto.current.strokeStyle = 'red';
-    contexto.current.beginPath();
-    contexto.current.moveTo(origenX, origenY);
-    contexto.current.lineTo(destinoX, destinoY);
-    contexto.current.lineWidth = '1.6';
-    contexto.current.cap = 'round';
-    contexto.current.stroke();
   };
 
   // Identificar el evento clic en la figura
   const superficieFigura = (x, y) => {
     let estaEncima = null;
-
-    cuadros.forEach(cuadro => {
-      if (
-        x >= cuadro.x &&
-        x <= cuadro.x + cuadro.w &&
-        y >= cuadro.y &&
-        y <= cuadro.y + cuadro.h
-      ) {
-        objetoApuntado = cuadro;
+    cuadros.forEach(figura => {
+      const { x: figX, y: figY, w: figW, h: figH } = figura;
+      // Si el cursor esta dentro de la figura en el eje X:
+      const rangoX =
+        x >= figX * nivelDeZoom && x <= (figX + figW) * nivelDeZoom;
+      // Si el cursor esta dentro de la figura en el eje Y:
+      const rangoY =
+        y >= figY * nivelDeZoom && y <= (figY + figH) * nivelDeZoom;
+      // Si el cursor esta dentro del rango X e Y, entonces esta encima de nuestra figura
+      if (rangoX && rangoY) {
+        objetoApuntado = figura;
         estaEncima = true;
+        return estaEncima;
       }
     });
     return estaEncima;
@@ -137,7 +94,6 @@ const Canvas = ({ actualizarHistorial = () => {} }) => {
       actualizarHistorial(cuadros);
       modificarCuadro(objetoApuntado);
     }
-
     objetoApuntado = null;
     estaPresionado = false;
   };
