@@ -3,12 +3,6 @@ import React, { useRef, useEffect, useContext } from 'react';
 import CanvasContext from '../../../context/CanvasContext/CanvasContext';
 
 import './Canvas.css';
-
-import imagen1 from '../../../img/image.png';
-import imagen2 from '../../../img/image2.png';
-import imagen3 from '../../../img/image3.png';
-import imagen6 from '../../../img/image6.png';
-import imagen7 from '../../../img/image7.png';
 import { dibujarCuadro } from './canvas.dibujar';
 
 const Canvas = ({ actualizarHistorial = () => {} }) => {
@@ -16,18 +10,6 @@ const Canvas = ({ actualizarHistorial = () => {} }) => {
   const contexto = useRef(null);
   const { cuadros, nivelDeZoom, modificarCuadro, seleccionarCuadro } =
     useContext(CanvasContext);
-  // contexto del canvas
-
-  const figuras = [
-    { x: 84, y: 133, w: 200, h: 200, r1: [], img: imagen1 },
-    { x: 223, y: 63, w: 100, h: 100, r1: [], img: imagen2 },
-    { x: 499, y: 455, w: 100, h: 100, r1: [], img: imagen3 },
-    { x: 402, y: 73, w: 100, h: 100, r1: [], img: imagen6 },
-    { x: 84, y: 300, w: 100, h: 100, r1: [], img: imagen7 },
-    { x: 100, y: 440, w: 100, h: 100, r1: [], img: imagen1 },
-    { x: 100, y: 440, w: 50, h: 50, r1: [], img: imagen2 },
-  ];
-  cuadros.push(...figuras);
 
   let estaPresionado = false;
   let objetoApuntado = null;
@@ -58,15 +40,10 @@ const Canvas = ({ actualizarHistorial = () => {} }) => {
       canvas.current.clientHeight,
     );
 
-    // cuadros[0].r1.push(cuadros[2]);
-    // cuadros[4].r1.push(cuadros[2]);
-    // cuadros[1].r1.push(cuadros[2]);
-    // cuadros[2].r1.push(cuadros[3]);
-    // cuadros[5].r1.push(cuadros[2]);
-
-    // cuadros.map(info => dibujarCuadro(info, contexto));
-
+    if (cuadros[0].r1.length === 0) cuadros[0].r1.push(cuadros[2]);
+    if (cuadros[1].r1.length === 0) cuadros[1].r1.push(cuadros[2]);
     contexto.current.scale(nivelDeZoom, nivelDeZoom);
+
     cuadros.map(info => dibujarCuadro(info, contexto.current));
     contexto.current.restore();
   };
@@ -77,9 +54,11 @@ const Canvas = ({ actualizarHistorial = () => {} }) => {
     cuadros.forEach(figura => {
       const { x: figX, y: figY, w: figW, h: figH } = figura;
       // Si el cursor esta dentro de la figura en el eje X:
-      const rangoX = x >= figX && x <= figX + figW;
+      const rangoX =
+        x >= figX * nivelDeZoom && x <= (figX + figW) * nivelDeZoom;
       // Si el cursor esta dentro de la figura en el eje Y:
-      const rangoY = y >= figY && y <= figY + figH;
+      const rangoY =
+        y >= figY * nivelDeZoom && y <= (figY + figH) * nivelDeZoom;
       // Si el cursor esta dentro del rango X e Y, entonces esta encima de nuestra figura
       if (rangoX && rangoY) {
         objetoApuntado = figura;

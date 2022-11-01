@@ -8,7 +8,7 @@ export const dibujarCuadro = (info, contexto) => {
   // contexto.stroke();
 
   dibujarImagen(info, contexto);
-  dibujarPropTexto({ x, y, text }, contexto);
+  dibujarPropTexto({ x, y, text: `${x}, ${y}` }, contexto);
   r1.map(cuadro => calcularLinea(info, cuadro, contexto));
 };
 
