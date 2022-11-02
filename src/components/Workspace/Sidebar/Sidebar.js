@@ -9,23 +9,29 @@ import openSidebarIcon from '../../../img/open-sidebar.png';
 import './Sidebar.css';
 
 const elementos = [
-  { tipo: 'Almacenamiento', nombre: 'almacenamiento-de-archivos2.png' },
-  { tipo: 'Base de datos', nombre: 'base-de-datos2.png' },
-  { tipo: 'Circulo', nombre: 'circulo2.png' },
-  { tipo: 'Enrutador', nombre: 'enrutador2.png' },
-  { tipo: 'Escritorio', nombre: 'escritorio2.png' },
-  { tipo: 'Fax', nombre: 'fax2.png' },
-  { tipo: 'Firewall', nombre: 'firewall2.png' },
-  { tipo: 'Hub', nombre: 'hub2.png' },
-  { tipo: 'Impresora', nombre: 'impresora2.png' },
-  { tipo: 'Laptop', nombre: 'laptop2.png' },
-  { tipo: 'Modem', nombre: 'modem2.png' },
-  { tipo: 'Rectangulo', nombre: 'rectangulo2.png' },
-  { tipo: 'Servidor', nombre: 'servidor2.png' },
-  { tipo: 'Servidor en la nube', nombre: 'servidor-en-la-nube2.png' },
-  { tipo: 'Servidor WWW', nombre: 'servidorwww2.png' },
-  { tipo: 'Telefono', nombre: 'telefono2.png' },
-  { tipo: 'Router Wifi', nombre: 'wifi-router2.png' },
+  {
+    tipo: 'Almacenamiento',
+    nombre: '/img/items/almacenamiento-de-archivos2.png',
+  },
+  { tipo: 'Base de datos', nombre: '/img/items/base-de-datos2.png' },
+  { tipo: 'Circulo', nombre: '/img/items/circulo2.png' },
+  { tipo: 'Enrutador', nombre: '/img/items/enrutador2.png' },
+  { tipo: 'Escritorio', nombre: '/img/items/escritorio2.png' },
+  { tipo: 'Fax', nombre: '/img/items/fax2.png' },
+  { tipo: 'Firewall', nombre: '/img/items/firewall2.png' },
+  { tipo: 'Hub', nombre: '/img/items/hub2.png' },
+  { tipo: 'Impresora', nombre: '/img/items/impresora2.png' },
+  { tipo: 'Laptop', nombre: '/img/items/laptop2.png' },
+  { tipo: 'Modem', nombre: '/img/items/modem2.png' },
+  { tipo: 'Rectangulo', nombre: '/img/items/rectangulo2.png' },
+  { tipo: 'Servidor', nombre: '/img/items/servidor2.png' },
+  {
+    tipo: 'Servidor en la nube',
+    nombre: '/img/items/servidor-en-la-nube2.png',
+  },
+  { tipo: 'Servidor WWW', nombre: '/img/items/servidorwww2.png' },
+  { tipo: 'Telefono', nombre: '/img/items/telefono2.png' },
+  { tipo: 'Router Wifi', nombre: '/img/items/wifi-router2.png' },
 ];
 
 const Sidebar = () => {
@@ -34,14 +40,14 @@ const Sidebar = () => {
 
   const toggleSidebar = () => setIsSidebarOpened(!isSidebarOpened);
 
-  const handleClick = tipoDeDibujo => {
+  const handleClick = imagePath => {
     const nuevoCuadro = {
       id: uuid(),
-      tipo: tipoDeDibujo,
+      img: imagePath,
       x: 86,
       y: 138,
-      w: 200,
-      h: 200,
+      w: 100,
+      h: 100,
     };
     crearCuadro(nuevoCuadro);
     toggleSidebar();
@@ -56,8 +62,12 @@ const Sidebar = () => {
       >
         <div className="sidebar-panel-grid">
           {elementos.map(elemento => (
-            <button key={elemento.tipo} className="sidebar-panel-item">
-              <img src={`/img/items/${elemento.nombre}`} height="120px" />
+            <button
+              key={elemento.tipo}
+              className="sidebar-panel-item"
+              onClick={() => handleClick(elemento.nombre)}
+            >
+              <img src={elemento.nombre} height="120px" />
             </button>
           ))}
         </div>
