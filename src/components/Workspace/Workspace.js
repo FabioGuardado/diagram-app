@@ -31,7 +31,7 @@ const Workspace = () => {
         text: contenidoCuadroDeTexto,
         x: 86,
         y: 138,
-        w: 20,
+        w: 200,
         h: 30,
       };
       crearCuadro(texto);
