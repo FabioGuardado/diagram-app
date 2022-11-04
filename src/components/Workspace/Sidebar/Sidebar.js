@@ -34,9 +34,9 @@ const elementos = [
   { tipo: 'Router Wifi', nombre: '/img/items/wifi-router2.png' },
 ];
 
-const Sidebar = () => {
+const Sidebar = ({ actualizarHistorial = () => {} }) => {
   const [isSidebarOpened, setIsSidebarOpened] = useState(false);
-  const { crearCuadro } = useContext(CanvasContext);
+  const { cuadros, crearCuadro } = useContext(CanvasContext);
 
   const toggleSidebar = () => setIsSidebarOpened(!isSidebarOpened);
 
@@ -50,6 +50,7 @@ const Sidebar = () => {
       h: 100,
     };
     crearCuadro(nuevoCuadro);
+    actualizarHistorial([...cuadros, nuevoCuadro]);
     toggleSidebar();
   };
 

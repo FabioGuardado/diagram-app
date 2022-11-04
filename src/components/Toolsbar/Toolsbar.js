@@ -16,6 +16,7 @@ const Toolsbar = ({
   actualizarHistorial = () => {},
   retroceder = () => {},
   adelantar = () => {},
+  toggleCuadroDeTexto = () => {},
 }) => {
   const {
     cuadros,
@@ -68,7 +69,7 @@ const Toolsbar = ({
     { nombre: 'Rehacer', icono: 'rehacer.png', funcion: adelantar },
     { nombre: 'Eliminar', icono: 'eliminar.png', funcion: handleEliminar },
     { nombre: 'Duplicar', icono: 'duplicar.png', funcion: handleDuplicar },
-    { nombre: 'Texto', icono: 'texto.png' },
+    { nombre: 'Texto', icono: 'texto.png', funcion: toggleCuadroDeTexto },
     { nombre: 'Acercar', icono: 'zoom-in.png', funcion: handleZoomIn },
     { nombre: 'Alejar', icono: 'zoom-out.png', funcion: handleZoomOut },
   ];

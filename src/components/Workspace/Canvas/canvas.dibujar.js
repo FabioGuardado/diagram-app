@@ -1,15 +1,18 @@
 // Funcion para dibujar el cuadro
 export const dibujarCuadro = (info, contexto) => {
-  const { x, y, w, h, r1, text } = info;
+  const { x, y, w, h, r1, text, img } = info;
   // contexto.beginPath();
   // contexto.lineWidth = '2';
   // contexto.strokeStyle = 'blue';
   // contexto.rect(x, y, w, h);
   // contexto.stroke();
 
-  dibujarImagen(info, contexto);
-  dibujarPropTexto({ x, y, text: `${x}, ${y}` }, contexto);
-  if (r1?.length) r1?.map(cuadro => calcularLinea(info, cuadro, contexto));
+  if (text) {
+    dibujarPropTexto({ x, y, text: text }, contexto);
+  } else if (img) {
+    dibujarImagen(info, contexto);
+    if (r1?.length) r1?.map(cuadro => calcularLinea(info, cuadro, contexto));
+  }
 };
 
 const calcularLinea = (origen, destino, contexto) => {
@@ -39,9 +42,9 @@ const dibujarLinea = (linea, contexto) => {
 
 const dibujarPropTexto = (punto, contexto) => {
   const { x, y, text } = punto;
-  contexto.font = '30px serif';
+  contexto.font = '30px sans-serif';
   contexto.fillStyle = 'black';
-  contexto.fillText(text, x, y - 5);
+  contexto.fillText(text, x, y);
 };
 
 const dibujarImagen = (imagen, contexto) => {
