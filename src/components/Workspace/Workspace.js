@@ -26,12 +26,13 @@ const Workspace = () => {
 
   const handleCrearTexto = () => {
     if (contenidoCuadroDeTexto.trim() !== '') {
+      const longitudDeLaCadena = contenidoCuadroDeTexto.length * 14;
       const texto = {
         id: uuid(),
         text: contenidoCuadroDeTexto,
         x: 86,
         y: 138,
-        w: 200,
+        w: longitudDeLaCadena,
         h: 30,
       };
       crearCuadro(texto);
