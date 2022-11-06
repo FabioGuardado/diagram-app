@@ -1,24 +1,15 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useContext } from 'react';
+
+import CanvasContext from '../../../context/CanvasContext/CanvasContext';
 
 import './Canvas.css';
+import { dibujarCuadro } from './canvas.dibujar';
 
-import nombreDeLaImagen from '../../../img/pic_the_scream.jpg';
-
-const Canvas = () => {
+const Canvas = ({ actualizarHistorial = () => {} }) => {
   const canvas = useRef();
-  // contexto del canvas
-  let contexto = null;
-
-  const cuadros = [
-    { x: 84, y: 133, w: 100, h: 100, r1: [], text: '0' },
-    { x: 223, y: 63, w: 100, h: 100, r1: [], text: '1' },
-    { x: 499, y: 455, w: 100, h: 100, r1: [], text: '2' },
-    { x: 402, y: 73, w: 100, h: 100, r1: [], text: '3' },
-    { x: 84, y: 300, w: 100, h: 100, r1: [], text: '4' },
-    { x: 100, y: 440, w: 100, h: 100, r1: [], text: '5' },
-    { x: 550, y: 40, w: 100, h: 100, r1: [], text: '6' },
-    { x: 700, y: 80, w: 100, h: 100, r1: [], text: '7' },
-  ];
+  const contexto = useRef(null);
+  const { cuadros, nivelDeZoom, modificarCuadro, seleccionarCuadro } =
+    useContext(CanvasContext);
 
   let estaPresionado = false;
   let objetoApuntado = null;
@@ -32,63 +23,59 @@ const Canvas = () => {
     elementoCanvas.width = elementoCanvas.clientWidth;
     elementoCanvas.height = elementoCanvas.clientHeight;
     // Obtenemos el contexto del canvas
-    contexto = elementoCanvas.getContext('2d');
+    contexto.current = elementoCanvas.getContext('2d');
   }, []);
 
   useEffect(() => {
-    dibujar();
-  }, []);
+    if (contexto.current) dibujar();
+  }, [cuadros, nivelDeZoom]);
 
   // Dibujar los cuadros
   const dibujar = () => {
-    contexto.clearRect(
+    contexto.current.save();
+    contexto.current.clearRect(
       0,
       0,
       canvas.current.clientWidth,
       canvas.current.clientHeight,
     );
 
-    const image = new Image(60, 45); // Using optional size for image
-    image.onload = drawImageActualSize; // Draw when image has loaded
-    image.src = 'pc.png';
+    contexto.current.scale(nivelDeZoom, nivelDeZoom);
 
-    cuadros.map(info => dibujarCuadro(info));
-  };
-
-  function drawImageActualSize() {
-    // Will draw the image as 300x227, ignoring the custom size of 60x45
-    // given in the constructor
-    contexto.drawImage(this, 0, 0);
-
-    // To use the custom size we'll have to specify the scale parameters
-    // using the element's width and height properties - lets draw one
-    // on top in the corner:
-    contexto.drawImage(this, 0, 0, this.width, this.height);
-  }
-
-  // Funcion para dibujar el cuadro
-  const dibujarCuadro = info => {
-    const { x, y, w, h, r1, text } = info;
-    contexto.beginPath();
-    contexto.lineWidth = '2';
-    contexto.strokeStyle = 'blue';
-    contexto.rect(x, y, w, h);
-    contexto.stroke();
+    cuadros.map(info => dibujarCuadro(info, contexto.current));
+    contexto.current.restore();
   };
 
   // Identificar el evento clic en la figura
   const superficieFigura = (x, y) => {
     let estaEncima = null;
-
-    cuadros.forEach(cuadro => {
-      if (
-        x >= cuadro.x &&
-        x <= cuadro.x + cuadro.w &&
-        y >= cuadro.y &&
-        y <= cuadro.y + cuadro.h
-      ) {
-        objetoApuntado = cuadro;
-        estaEncima = true;
+    cuadros.forEach(figura => {
+      const { x: figX, y: figY, w: figW, h: figH, text } = figura;
+      if (text) {
+        const rangoX =
+          x >= figX * nivelDeZoom && x <= (figX + figW) * nivelDeZoom;
+        // Si el cursor esta dentro de la figura en el eje Y:
+        const rangoY =
+          y <= figY * nivelDeZoom && y >= (figY - figH) * nivelDeZoom;
+        // Si el cursor esta dentro del rango X e Y, entonces esta encima de nuestra figura
+        if (rangoX && rangoY) {
+          objetoApuntado = figura;
+          estaEncima = true;
+          return estaEncima;
+        }
+      } else {
+        // Si el cursor esta dentro de la figura en el eje X:
+        const rangoX =
+          x >= figX * nivelDeZoom && x <= (figX + figW) * nivelDeZoom;
+        // Si el cursor esta dentro de la figura en el eje Y:
+        const rangoY =
+          y >= figY * nivelDeZoom && y <= (figY + figH) * nivelDeZoom;
+        // Si el cursor esta dentro del rango X e Y, entonces esta encima de nuestra figura
+        if (rangoX && rangoY) {
+          objetoApuntado = figura;
+          estaEncima = true;
+          return estaEncima;
+        }
       }
     });
     return estaEncima;
@@ -114,6 +101,11 @@ const Canvas = () => {
   };
 
   const levantarClic = e => {
+    if (objetoApuntado) {
+      seleccionarCuadro(objetoApuntado);
+      actualizarHistorial(cuadros);
+      modificarCuadro(objetoApuntado);
+    }
     objetoApuntado = null;
     estaPresionado = false;
   };
@@ -123,18 +115,15 @@ const Canvas = () => {
   };
 
   return (
-    <>
-      <img id="source" src={nombreDeLaImagen} style={{ display: 'none' }} />
-      <canvas
-        ref={canvas}
-        id="canvas"
-        className="workspace-canvas"
-        onMouseDown={hacerClic}
-        onMouseMove={moverMouse}
-        onMouseUp={levantarClic}
-        onMouseOut={sobrepasarMouse}
-      ></canvas>
-    </>
+    <canvas
+      ref={canvas}
+      id="canvas"
+      className="workspace-canvas"
+      onMouseDown={hacerClic}
+      onMouseMove={moverMouse}
+      onMouseUp={levantarClic}
+      onMouseOut={sobrepasarMouse}
+    ></canvas>
   );
 };
 

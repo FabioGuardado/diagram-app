@@ -5,3 +5,25 @@ div.workspace-container {
   background-color: rgb(203, 214, 232) !important;
   z-index: 2;
 }
+
+div.workspace-container > .floating-input-container {
+  z-index: 10;
+  position: absolute;
+  top: 0;
+  left: 240px;
+  padding: 1rem;
+  background-color: #747473;
+  display: flex;
+}
+
+div.floating-input-container > .floating-input {
+  font-size: 1.2rem;
+  padding: 0.2rem;
+}
+
+div.floating-input-container > .floating-input-continuar {
+  margin-left: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
