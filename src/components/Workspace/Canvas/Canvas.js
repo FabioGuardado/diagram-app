@@ -40,8 +40,6 @@ const Canvas = ({ actualizarHistorial = () => {} }) => {
       canvas.current.clientHeight,
     );
 
-    if (cuadros[0].r1.length === 0) cuadros[0].r1.push(cuadros[2]);
-    if (cuadros[1].r1.length === 0) cuadros[1].r1.push(cuadros[2]);
     contexto.current.scale(nivelDeZoom, nivelDeZoom);
 
     cuadros.map(info => dibujarCuadro(info, contexto.current));

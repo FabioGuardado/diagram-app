@@ -58,7 +58,6 @@ const Workspace = () => {
               name="input-crear-texto"
               placeholder="Ingrese texto"
               type="text"
-              maxLength={15}
               onChange={handleCuadroDeTextoChange}
               className="floating-input"
             />
