@@ -95,8 +95,8 @@ const Canvas = ({ actualizarHistorial = () => {} }) => {
     const dy = mouseY - inicioY;
     inicioX = mouseX;
     inicioY = mouseY;
-    objetoApuntado.x += dx;
-    objetoApuntado.y += dy;
+    objetoApuntado.x += dx / nivelDeZoom;
+    objetoApuntado.y += dy / nivelDeZoom;
     dibujar();
   };
 

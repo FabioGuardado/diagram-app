@@ -1,18 +1,26 @@
 // Funcion para dibujar el cuadro
 export const dibujarCuadro = (info, contexto) => {
-  const { x, y, w, h, r1, text, img } = info;
-  // contexto.beginPath();
-  // contexto.lineWidth = '2';
-  // contexto.strokeStyle = 'blue';
-  // contexto.rect(x, y, w, h);
-  // contexto.stroke();
-
+  const { x, y, text, img } = info;
   if (text) {
     dibujarPropTexto({ x, y, text: text }, contexto);
   } else if (img) {
     dibujarImagen(info, contexto);
-    if (r1?.length) r1?.map(cuadro => calcularLinea(info, cuadro, contexto));
   }
+};
+
+export const dibujarBorde = (info, contexto) => {
+  const { x, y, w, h } = info;
+  contexto.beginPath();
+  contexto.lineWidth = '3';
+  contexto.strokeStyle = 'red';
+  contexto.rect(x, y, w, h);
+  contexto.stroke();
+};
+
+// Funcion para dibujar las lineas
+export const crearLineas = (origen, contexto) => {
+  const { r1 } = origen;
+  r1.map(cuadro => calcularLinea(origen, cuadro, contexto));
 };
 
 const calcularLinea = (origen, destino, contexto) => {
