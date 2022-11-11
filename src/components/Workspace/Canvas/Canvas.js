@@ -3,7 +3,7 @@ import React, { useRef, useEffect, useContext } from 'react';
 import CanvasContext from '../../../context/CanvasContext/CanvasContext';
 
 import './Canvas.css';
-import { dibujarCuadro } from './canvas.dibujar';
+import { dibujarCuadro, crearLineas } from './canvas.dibujar';
 
 const Canvas = ({ actualizarHistorial = () => {} }) => {
   const canvas = useRef();
@@ -41,7 +41,7 @@ const Canvas = ({ actualizarHistorial = () => {} }) => {
     );
 
     contexto.current.scale(nivelDeZoom, nivelDeZoom);
-
+    cuadros.map(cuadro => crearLineas(cuadro, contexto.current));
     cuadros.map(info => dibujarCuadro(info, contexto.current));
     contexto.current.restore();
   };

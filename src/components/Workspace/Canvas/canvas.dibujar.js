@@ -20,7 +20,7 @@ export const dibujarBorde = (info, contexto) => {
 // Funcion para dibujar las lineas
 export const crearLineas = (origen, contexto) => {
   const { r1 } = origen;
-  r1.map(cuadro => calcularLinea(origen, cuadro, contexto));
+  r1?.map(cuadro => calcularLinea(origen, cuadro, contexto));
 };
 
 const calcularLinea = (origen, destino, contexto) => {
