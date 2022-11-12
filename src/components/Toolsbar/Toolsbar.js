@@ -34,7 +34,12 @@ const Toolsbar = ({
     if (cuadroSeleccionado) {
       eliminarCuadro();
       actualizarHistorial(
-        cuadros.filter(cuadro => cuadro.id !== cuadroSeleccionado.id),
+        cuadros.filter(cuadro => {
+          cuadro.rl = cuadro.rl.filter(
+            relation => relation.id !== cuadroSeleccionado.id,
+          );
+          return cuadro.id !== cuadroSeleccionado.id;
+        }),
       );
     }
   };
