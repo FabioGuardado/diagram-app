@@ -54,6 +54,11 @@ const CanvasReducer = (estado, accion) => {
         ...estado,
         cuadroOrigen: accion.payload,
       };
+    case 'SELECCIONAR_TODOS':
+      return {
+        ...estado,
+        seleccionarTodo: !accion.payload,
+      };
     default:
       return estado;
   }

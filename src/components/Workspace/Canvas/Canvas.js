@@ -17,6 +17,7 @@ const Canvas = ({ actualizarHistorial = () => {} }) => {
     actualizarOrigen,
     cuadroOrigen,
     actualizarConectar,
+    seleccionarTodo,
   } = useContext(CanvasContext);
 
   let estaPresionado = false;
@@ -36,7 +37,7 @@ const Canvas = ({ actualizarHistorial = () => {} }) => {
 
   useEffect(() => {
     if (contexto.current) dibujar();
-  }, [cuadros, nivelDeZoom, cuadroOrigen, conectar]);
+  }, [cuadros, nivelDeZoom, conectar, seleccionarTodo]);
 
   // Dibujar los cuadros
   const dibujar = () => {
@@ -50,7 +51,7 @@ const Canvas = ({ actualizarHistorial = () => {} }) => {
 
     contexto.current.scale(nivelDeZoom, nivelDeZoom);
     cuadros.map(cuadro => crearLineas(cuadro, contexto.current));
-    cuadros.map(info => dibujarCuadro(info, contexto.current));
+    cuadros.map(info => dibujarCuadro(info, contexto.current, seleccionarTodo));
     if (conectar && cuadroOrigen) dibujarBorde(cuadroOrigen, contexto.current);
 
     contexto.current.restore();
@@ -97,16 +98,27 @@ const Canvas = ({ actualizarHistorial = () => {} }) => {
     estaPresionado = superficieFigura(inicioX, inicioY);
   };
 
+  const moverTodos = (dx, dy) => {
+    cuadros.map(cuadro => {
+      cuadro.x += dx;
+      cuadro.y += dy;
+    });
+  };
+
   const moverMouse = e => {
     if (!estaPresionado) return;
     const mouseX = parseInt(e.nativeEvent.offsetX - canvas.current.clientLeft);
     const mouseY = parseInt(e.nativeEvent.offsetY - canvas.current.clientTop);
-    const dx = mouseX - inicioX;
-    const dy = mouseY - inicioY;
+    const dx = (mouseX - inicioX) / nivelDeZoom;
+    const dy = (mouseY - inicioY) / nivelDeZoom;
     inicioX = mouseX;
     inicioY = mouseY;
-    objetoApuntado.x += dx / nivelDeZoom;
-    objetoApuntado.y += dy / nivelDeZoom;
+    if (seleccionarTodo) moverTodos(dx, dy);
+    else {
+      objetoApuntado.x += dx;
+      objetoApuntado.y += dy;
+    }
+
     dibujar();
   };
 

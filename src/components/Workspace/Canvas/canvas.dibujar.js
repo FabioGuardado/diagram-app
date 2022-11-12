@@ -1,6 +1,7 @@
 // Funcion para dibujar el cuadro
-export const dibujarCuadro = (info, contexto) => {
+export const dibujarCuadro = (info, contexto, todos = false) => {
   const { x, y, text, img } = info;
+  if (todos) dibujarBorde(info, contexto);
   if (text) {
     dibujarPropTexto({ x, y, text: text }, contexto);
   } else if (img) {
@@ -12,7 +13,7 @@ export const dibujarBorde = (info, contexto) => {
   const { x, y, w, h } = info;
   contexto.beginPath();
   contexto.lineWidth = '3';
-  contexto.strokeStyle = 'red';
+  contexto.strokeStyle = 'blue';
   contexto.rect(x, y, w, h);
   contexto.stroke();
 };
