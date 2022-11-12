@@ -27,6 +27,7 @@ const CanvasProvider = ({ children }) => {
   };
 
   const duplicarCuadro = cuadroDuplicado => {
+    cuadroDuplicado.rl = [];
     dispatch({ tipo: 'DUPLICAR_CUADRO', payload: cuadroDuplicado });
   };
 
