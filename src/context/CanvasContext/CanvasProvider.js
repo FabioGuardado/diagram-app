@@ -6,6 +6,8 @@ const ESTADO_INICIAL = {
   cuadros: [],
   cuadroSeleccionado: null,
   nivelDeZoom: 1,
+  cuadroOrigen: null,
+  conectar: false,
 };
 
 const CanvasProvider = ({ children }) => {
@@ -39,6 +41,14 @@ const CanvasProvider = ({ children }) => {
     dispatch({ tipo: 'RESTAURAR_ESTADO', payload: estado });
   };
 
+  const actualizarConectar = valor => {
+    dispatch({ tipo: 'CONECTAR_CUADROS', payload: valor });
+  };
+
+  const actualizarOrigen = cuadroOrigen => {
+    dispatch({ tipo: 'ACTUALIZAR_ORIGEN', payload: cuadroOrigen });
+  };
+
   return (
     <CanvasContext.Provider
       value={{
@@ -50,6 +60,8 @@ const CanvasProvider = ({ children }) => {
         seleccionarCuadro,
         modificarZoom,
         restaurarEstado,
+        actualizarConectar,
+        actualizarOrigen,
       }}
     >
       {children}

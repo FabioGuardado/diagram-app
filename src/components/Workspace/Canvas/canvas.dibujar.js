@@ -19,11 +19,10 @@ export const dibujarBorde = (info, contexto) => {
 
 // Funcion para dibujar las lineas
 export const crearLineas = (origen, contexto) => {
-  const { r1 } = origen;
-  r1?.map(cuadro => calcularLinea(origen, cuadro, contexto));
+  origen.rl?.map(cuadro => calcularLinea(origen, cuadro, contexto));
 };
 
-const calcularLinea = (origen, destino, contexto) => {
+export const calcularLinea = (origen, destino, contexto) => {
   if (!destino) return;
 
   const { x: forma1X, y: forma1Y, w: origenW, h: origenH } = origen;

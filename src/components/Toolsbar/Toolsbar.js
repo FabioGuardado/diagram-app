@@ -25,6 +25,9 @@ const Toolsbar = ({
     eliminarCuadro,
     duplicarCuadro,
     modificarZoom,
+    conectar,
+    actualizarConectar,
+    seleccionarCuadro,
   } = useContext(CanvasContext);
 
   const handleEliminar = () => {
@@ -64,6 +67,11 @@ const Toolsbar = ({
     }
   };
 
+  const handleConectar = () => {
+    seleccionarCuadro(null);
+    actualizarConectar(conectar);
+  };
+
   const herramientas = [
     { nombre: 'Deshacer', icono: 'deshacer.png', funcion: retroceder },
     { nombre: 'Rehacer', icono: 'rehacer.png', funcion: adelantar },
@@ -72,6 +80,7 @@ const Toolsbar = ({
     { nombre: 'Texto', icono: 'texto.png', funcion: toggleCuadroDeTexto },
     { nombre: 'Acercar', icono: 'zoom-in.png', funcion: handleZoomIn },
     { nombre: 'Alejar', icono: 'zoom-out.png', funcion: handleZoomOut },
+    { nombre: 'Conectar', icono: 'conectar.png', funcion: handleConectar },
   ];
   return (
     <>

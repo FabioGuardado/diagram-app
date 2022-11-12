@@ -3,13 +3,21 @@ import React, { useRef, useEffect, useContext } from 'react';
 import CanvasContext from '../../../context/CanvasContext/CanvasContext';
 
 import './Canvas.css';
-import { dibujarCuadro, crearLineas } from './canvas.dibujar';
+import { dibujarCuadro, crearLineas, dibujarBorde } from './canvas.dibujar';
 
 const Canvas = ({ actualizarHistorial = () => {} }) => {
   const canvas = useRef();
   const contexto = useRef(null);
-  const { cuadros, nivelDeZoom, modificarCuadro, seleccionarCuadro } =
-    useContext(CanvasContext);
+  const {
+    cuadros,
+    nivelDeZoom,
+    modificarCuadro,
+    seleccionarCuadro,
+    conectar,
+    actualizarOrigen,
+    cuadroOrigen,
+    actualizarConectar,
+  } = useContext(CanvasContext);
 
   let estaPresionado = false;
   let objetoApuntado = null;
@@ -28,7 +36,7 @@ const Canvas = ({ actualizarHistorial = () => {} }) => {
 
   useEffect(() => {
     if (contexto.current) dibujar();
-  }, [cuadros, nivelDeZoom]);
+  }, [cuadros, nivelDeZoom, cuadroOrigen, conectar]);
 
   // Dibujar los cuadros
   const dibujar = () => {
@@ -43,6 +51,8 @@ const Canvas = ({ actualizarHistorial = () => {} }) => {
     contexto.current.scale(nivelDeZoom, nivelDeZoom);
     cuadros.map(cuadro => crearLineas(cuadro, contexto.current));
     cuadros.map(info => dibujarCuadro(info, contexto.current));
+    if (conectar && cuadroOrigen) dibujarBorde(cuadroOrigen, contexto.current);
+
     contexto.current.restore();
   };
 
@@ -100,11 +110,29 @@ const Canvas = ({ actualizarHistorial = () => {} }) => {
     dibujar();
   };
 
+  const validarConexiones = (origen, destino) => {
+    const conectadoOrigen = origen.rl.find(cuadro => cuadro.id === destino.id);
+    const conectadoDestino = destino.rl.find(cuadro => cuadro.id === origen.id);
+    return conectadoOrigen || conectadoDestino;
+  };
+
+  const crearConexion = () => {
+    if (!cuadroOrigen) {
+      actualizarOrigen(objetoApuntado);
+    } else if (objetoApuntado.id !== cuadroOrigen.id) {
+      const validado = validarConexiones(cuadroOrigen, objetoApuntado);
+      if (!validado) cuadroOrigen.rl.push(objetoApuntado);
+      actualizarOrigen(null);
+      actualizarConectar(conectar);
+    }
+  };
+
   const levantarClic = e => {
     if (objetoApuntado) {
       seleccionarCuadro(objetoApuntado);
       actualizarHistorial(cuadros);
       modificarCuadro(objetoApuntado);
+      if (conectar) crearConexion();
     }
     objetoApuntado = null;
     estaPresionado = false;
