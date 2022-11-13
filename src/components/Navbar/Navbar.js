@@ -1,17 +1,15 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 
 import { jsPDF } from 'jspdf';
 
 import Divider from '../Divider/Divider';
 
 import './Navbar.css';
-import CanvasContext from '../../context/CanvasContext/CanvasContext';
 
 const Navbar = () => {
   const canvas = document.getElementById('canvas');
   const [isMenuArchivoOpened, setIsMenuArchivoOpened] = useState(false);
   const [isMenuEditarOpened, setIsMenuEditarOpened] = useState(false);
-  const { seleccionarTodo, actualizarSeleccionar } = useContext(CanvasContext);
 
   const toggleMenuArchivoOpened = () =>
     setIsMenuArchivoOpened(!isMenuArchivoOpened);
@@ -20,11 +18,9 @@ const Navbar = () => {
 
   const guardarComoJPG = () => {
     const context = canvas.getContext('2d');
-    context.save();
     context.globalCompositeOperation = 'destination-over';
     context.fillStyle = '#cad5e8';
     context.fillRect(0, 0, canvas.width, canvas.height);
-    context.restore();
 
     const imageURL = canvas.toDataURL('image/jpg');
 
@@ -54,10 +50,6 @@ const Navbar = () => {
 
     doc.addImage(imageURL, 5, 5, pdfWidth, pdfHeight);
     doc.save('draw.pdf');
-  };
-
-  const selecciona = () => {
-    actualizarSeleccionar(seleccionarTodo);
   };
 
   return (
@@ -105,9 +97,7 @@ const Navbar = () => {
                   isMenuEditarOpened ? 'submenu-active' : 'submenu-hidden'
                 }`}
               >
-                <li>
-                  <a onClick={selecciona}>Seleccionar todo</a>
-                </li>
+                <li>Seleccionar todo</li>
                 <li>Agrupar</li>
                 <li>Desagrupar</li>
               </ul>
