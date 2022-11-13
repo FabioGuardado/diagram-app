@@ -51,9 +51,11 @@ const Canvas = ({ actualizarHistorial = () => {} }) => {
 
     contexto.current.scale(nivelDeZoom, nivelDeZoom);
     cuadros.map(cuadro => crearLineas(cuadro, contexto.current));
-    cuadros.map(info => dibujarCuadro(info, contexto.current, seleccionarTodo));
+    cuadros.map(cuadro =>
+      dibujarCuadro(cuadro, contexto.current, seleccionarTodo),
+    );
+    if (objetoApuntado) dibujarBorde(objetoApuntado, contexto.current);
     if (conectar && cuadroOrigen) dibujarBorde(cuadroOrigen, contexto.current);
-
     contexto.current.restore();
   };
 
@@ -61,32 +63,18 @@ const Canvas = ({ actualizarHistorial = () => {} }) => {
   const superficieFigura = (x, y) => {
     let estaEncima = null;
     cuadros.forEach(figura => {
-      const { x: figX, y: figY, w: figW, h: figH, text } = figura;
-      if (text) {
-        const rangoX =
-          x >= figX * nivelDeZoom && x <= (figX + figW) * nivelDeZoom;
-        // Si el cursor esta dentro de la figura en el eje Y:
-        const rangoY =
-          y <= figY * nivelDeZoom && y >= (figY - figH) * nivelDeZoom;
-        // Si el cursor esta dentro del rango X e Y, entonces esta encima de nuestra figura
-        if (rangoX && rangoY) {
-          objetoApuntado = figura;
-          estaEncima = true;
-          return estaEncima;
-        }
-      } else {
-        // Si el cursor esta dentro de la figura en el eje X:
-        const rangoX =
-          x >= figX * nivelDeZoom && x <= (figX + figW) * nivelDeZoom;
-        // Si el cursor esta dentro de la figura en el eje Y:
-        const rangoY =
-          y >= figY * nivelDeZoom && y <= (figY + figH) * nivelDeZoom;
-        // Si el cursor esta dentro del rango X e Y, entonces esta encima de nuestra figura
-        if (rangoX && rangoY) {
-          objetoApuntado = figura;
-          estaEncima = true;
-          return estaEncima;
-        }
+      const { x: figX, y: figY, w: figW, h: figH } = figura;
+      // Si el cursor esta dentro de la figura en el eje X:
+      const rangoX =
+        x >= figX * nivelDeZoom && x <= (figX + figW) * nivelDeZoom;
+      // Si el cursor esta dentro de la figura en el eje Y:
+      const rangoY =
+        y >= figY * nivelDeZoom && y <= (figY + figH) * nivelDeZoom;
+      // Si el cursor esta dentro del rango X e Y, entonces esta encima de nuestra figura
+      if (rangoX && rangoY) {
+        objetoApuntado = figura;
+        estaEncima = true;
+        return estaEncima;
       }
     });
     return estaEncima;
@@ -106,7 +94,7 @@ const Canvas = ({ actualizarHistorial = () => {} }) => {
   };
 
   const moverMouse = e => {
-    if (!estaPresionado) return;
+    if (!estaPresionado || conectar) return;
     const mouseX = parseInt(e.nativeEvent.offsetX - canvas.current.clientLeft);
     const mouseY = parseInt(e.nativeEvent.offsetY - canvas.current.clientTop);
     const dx = (mouseX - inicioX) / nivelDeZoom;
@@ -129,6 +117,7 @@ const Canvas = ({ actualizarHistorial = () => {} }) => {
   };
 
   const crearConexion = () => {
+    if (cuadroOrigen?.text || objetoApuntado?.text) return;
     if (!cuadroOrigen) {
       actualizarOrigen(objetoApuntado);
     } else if (objetoApuntado.id !== cuadroOrigen.id) {
