@@ -6,11 +6,15 @@ const CanvasReducer = (estado, accion) => {
         cuadros: [...estado.cuadros, accion.payload],
       };
     case 'ELIMINAR_DIBUJO':
+      const { cuadroSeleccionado } = estado;
       return {
         ...estado,
-        cuadros: estado.cuadros.filter(
-          cuadro => cuadro.id !== estado.cuadroSeleccionado.id,
-        ),
+        cuadros: estado.cuadros.filter(cuadro => {
+          cuadro.rl = cuadro.rl.filter(
+            relation => relation.id !== cuadroSeleccionado.id,
+          );
+          return cuadro.id !== cuadroSeleccionado.id;
+        }),
         cuadroSeleccionado: null,
       };
     case 'MODIFICAR_CUADRO':
@@ -39,6 +43,21 @@ const CanvasReducer = (estado, accion) => {
       return {
         ...estado,
         cuadros: accion.payload,
+      };
+    case 'CONECTAR_CUADROS':
+      return {
+        ...estado,
+        conectar: !accion.payload,
+      };
+    case 'ACTUALIZAR_ORIGEN':
+      return {
+        ...estado,
+        cuadroOrigen: accion.payload,
+      };
+    case 'SELECCIONAR_TODOS':
+      return {
+        ...estado,
+        seleccionarTodo: !accion.payload,
       };
     default:
       return estado;

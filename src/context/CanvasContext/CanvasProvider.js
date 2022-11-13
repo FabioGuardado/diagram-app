@@ -6,6 +6,9 @@ const ESTADO_INICIAL = {
   cuadros: [],
   cuadroSeleccionado: null,
   nivelDeZoom: 1,
+  cuadroOrigen: null,
+  conectar: false,
+  seleccionarTodo: false,
 };
 
 const CanvasProvider = ({ children }) => {
@@ -24,6 +27,7 @@ const CanvasProvider = ({ children }) => {
   };
 
   const duplicarCuadro = cuadroDuplicado => {
+    cuadroDuplicado.rl = [];
     dispatch({ tipo: 'DUPLICAR_CUADRO', payload: cuadroDuplicado });
   };
 
@@ -39,6 +43,18 @@ const CanvasProvider = ({ children }) => {
     dispatch({ tipo: 'RESTAURAR_ESTADO', payload: estado });
   };
 
+  const actualizarConectar = valor => {
+    dispatch({ tipo: 'CONECTAR_CUADROS', payload: valor });
+  };
+
+  const actualizarOrigen = cuadroOrigen => {
+    dispatch({ tipo: 'ACTUALIZAR_ORIGEN', payload: cuadroOrigen });
+  };
+
+  const actualizarSeleccionar = valor => {
+    dispatch({ tipo: 'SELECCIONAR_TODOS', payload: valor });
+  };
+
   return (
     <CanvasContext.Provider
       value={{
@@ -50,6 +66,9 @@ const CanvasProvider = ({ children }) => {
         seleccionarCuadro,
         modificarZoom,
         restaurarEstado,
+        actualizarConectar,
+        actualizarOrigen,
+        actualizarSeleccionar,
       }}
     >
       {children}

@@ -25,13 +25,21 @@ const Toolsbar = ({
     eliminarCuadro,
     duplicarCuadro,
     modificarZoom,
+    conectar,
+    actualizarConectar,
+    seleccionarCuadro,
   } = useContext(CanvasContext);
 
   const handleEliminar = () => {
     if (cuadroSeleccionado) {
       eliminarCuadro();
       actualizarHistorial(
-        cuadros.filter(cuadro => cuadro.id !== cuadroSeleccionado.id),
+        cuadros.filter(cuadro => {
+          cuadro.rl = cuadro.rl.filter(
+            relation => relation.id !== cuadroSeleccionado.id,
+          );
+          return cuadro.id !== cuadroSeleccionado.id;
+        }),
       );
     }
   };
@@ -64,6 +72,11 @@ const Toolsbar = ({
     }
   };
 
+  const handleConectar = () => {
+    seleccionarCuadro(null);
+    actualizarConectar(conectar);
+  };
+
   const herramientas = [
     { nombre: 'Deshacer', icono: 'deshacer.png', funcion: retroceder },
     { nombre: 'Rehacer', icono: 'rehacer.png', funcion: adelantar },
@@ -72,6 +85,7 @@ const Toolsbar = ({
     { nombre: 'Texto', icono: 'texto.png', funcion: toggleCuadroDeTexto },
     { nombre: 'Acercar', icono: 'zoom-in.png', funcion: handleZoomIn },
     { nombre: 'Alejar', icono: 'zoom-out.png', funcion: handleZoomOut },
+    { nombre: 'Conectar', icono: 'conectar.png', funcion: handleConectar },
   ];
   return (
     <>
