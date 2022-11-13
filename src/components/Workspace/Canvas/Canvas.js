@@ -3,13 +3,22 @@ import React, { useRef, useEffect, useContext } from 'react';
 import CanvasContext from '../../../context/CanvasContext/CanvasContext';
 
 import './Canvas.css';
-import { dibujarCuadro } from './canvas.dibujar';
+import { dibujarCuadro, crearLineas, dibujarBorde } from './canvas.dibujar';
 
 const Canvas = ({ actualizarHistorial = () => {} }) => {
   const canvas = useRef();
   const contexto = useRef(null);
-  const { cuadros, nivelDeZoom, modificarCuadro, seleccionarCuadro } =
-    useContext(CanvasContext);
+  const {
+    cuadros,
+    nivelDeZoom,
+    modificarCuadro,
+    seleccionarCuadro,
+    conectar,
+    actualizarOrigen,
+    cuadroOrigen,
+    actualizarConectar,
+    seleccionarTodo,
+  } = useContext(CanvasContext);
 
   let estaPresionado = false;
   let objetoApuntado = null;
@@ -28,7 +37,7 @@ const Canvas = ({ actualizarHistorial = () => {} }) => {
 
   useEffect(() => {
     if (contexto.current) dibujar();
-  }, [cuadros, nivelDeZoom]);
+  }, [cuadros, nivelDeZoom, conectar, seleccionarTodo]);
 
   // Dibujar los cuadros
   const dibujar = () => {
@@ -41,8 +50,12 @@ const Canvas = ({ actualizarHistorial = () => {} }) => {
     );
 
     contexto.current.scale(nivelDeZoom, nivelDeZoom);
-
-    cuadros.map(info => dibujarCuadro(info, contexto.current));
+    cuadros.map(cuadro => crearLineas(cuadro, contexto.current));
+    cuadros.map(cuadro =>
+      dibujarCuadro(cuadro, contexto.current, seleccionarTodo),
+    );
+    if (objetoApuntado) dibujarBorde(objetoApuntado, contexto.current);
+    if (conectar && cuadroOrigen) dibujarBorde(cuadroOrigen, contexto.current);
     contexto.current.restore();
   };
 
@@ -50,32 +63,18 @@ const Canvas = ({ actualizarHistorial = () => {} }) => {
   const superficieFigura = (x, y) => {
     let estaEncima = null;
     cuadros.forEach(figura => {
-      const { x: figX, y: figY, w: figW, h: figH, text } = figura;
-      if (text) {
-        const rangoX =
-          x >= figX * nivelDeZoom && x <= (figX + figW) * nivelDeZoom;
-        // Si el cursor esta dentro de la figura en el eje Y:
-        const rangoY =
-          y <= figY * nivelDeZoom && y >= (figY - figH) * nivelDeZoom;
-        // Si el cursor esta dentro del rango X e Y, entonces esta encima de nuestra figura
-        if (rangoX && rangoY) {
-          objetoApuntado = figura;
-          estaEncima = true;
-          return estaEncima;
-        }
-      } else {
-        // Si el cursor esta dentro de la figura en el eje X:
-        const rangoX =
-          x >= figX * nivelDeZoom && x <= (figX + figW) * nivelDeZoom;
-        // Si el cursor esta dentro de la figura en el eje Y:
-        const rangoY =
-          y >= figY * nivelDeZoom && y <= (figY + figH) * nivelDeZoom;
-        // Si el cursor esta dentro del rango X e Y, entonces esta encima de nuestra figura
-        if (rangoX && rangoY) {
-          objetoApuntado = figura;
-          estaEncima = true;
-          return estaEncima;
-        }
+      const { x: figX, y: figY, w: figW, h: figH } = figura;
+      // Si el cursor esta dentro de la figura en el eje X:
+      const rangoX =
+        x >= figX * nivelDeZoom && x <= (figX + figW) * nivelDeZoom;
+      // Si el cursor esta dentro de la figura en el eje Y:
+      const rangoY =
+        y >= figY * nivelDeZoom && y <= (figY + figH) * nivelDeZoom;
+      // Si el cursor esta dentro del rango X e Y, entonces esta encima de nuestra figura
+      if (rangoX && rangoY) {
+        objetoApuntado = figura;
+        estaEncima = true;
+        return estaEncima;
       }
     });
     return estaEncima;
@@ -87,17 +86,46 @@ const Canvas = ({ actualizarHistorial = () => {} }) => {
     estaPresionado = superficieFigura(inicioX, inicioY);
   };
 
+  const moverTodos = (dx, dy) => {
+    cuadros.map(cuadro => {
+      cuadro.x += dx;
+      cuadro.y += dy;
+    });
+  };
+
   const moverMouse = e => {
-    if (!estaPresionado) return;
+    if (!estaPresionado || conectar) return;
     const mouseX = parseInt(e.nativeEvent.offsetX - canvas.current.clientLeft);
     const mouseY = parseInt(e.nativeEvent.offsetY - canvas.current.clientTop);
-    const dx = mouseX - inicioX;
-    const dy = mouseY - inicioY;
+    const dx = (mouseX - inicioX) / nivelDeZoom;
+    const dy = (mouseY - inicioY) / nivelDeZoom;
     inicioX = mouseX;
     inicioY = mouseY;
-    objetoApuntado.x += dx;
-    objetoApuntado.y += dy;
+    if (seleccionarTodo) moverTodos(dx, dy);
+    else {
+      objetoApuntado.x += dx;
+      objetoApuntado.y += dy;
+    }
+
     dibujar();
+  };
+
+  const validarConexiones = (origen, destino) => {
+    const conectadoOrigen = origen.rl.find(cuadro => cuadro.id === destino.id);
+    const conectadoDestino = destino.rl.find(cuadro => cuadro.id === origen.id);
+    return conectadoOrigen || conectadoDestino;
+  };
+
+  const crearConexion = () => {
+    if (cuadroOrigen?.text || objetoApuntado?.text) return;
+    if (!cuadroOrigen) {
+      actualizarOrigen(objetoApuntado);
+    } else if (objetoApuntado.id !== cuadroOrigen.id) {
+      const validado = validarConexiones(cuadroOrigen, objetoApuntado);
+      if (!validado) cuadroOrigen.rl.push(objetoApuntado);
+      actualizarOrigen(null);
+      actualizarConectar(conectar);
+    }
   };
 
   const levantarClic = e => {
@@ -105,6 +133,7 @@ const Canvas = ({ actualizarHistorial = () => {} }) => {
       seleccionarCuadro(objetoApuntado);
       actualizarHistorial(cuadros);
       modificarCuadro(objetoApuntado);
+      if (conectar) crearConexion();
     }
     objetoApuntado = null;
     estaPresionado = false;

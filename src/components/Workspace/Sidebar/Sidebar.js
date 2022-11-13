@@ -48,6 +48,7 @@ const Sidebar = ({ actualizarHistorial = () => {} }) => {
       y: 138,
       w: 100,
       h: 100,
+      rl: [],
     };
     crearCuadro(nuevoCuadro);
     actualizarHistorial([...cuadros, nuevoCuadro]);
