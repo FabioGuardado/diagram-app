@@ -10,7 +10,7 @@ const CanvasReducer = (estado, accion) => {
       return {
         ...estado,
         cuadros: estado.cuadros.filter(cuadro => {
-          cuadro.rl = cuadro.rl.filter(
+          cuadro.rl = cuadro.rl?.filter(
             relation => relation.id !== cuadroSeleccionado.id,
           );
           return cuadro.id !== cuadroSeleccionado.id;
@@ -58,6 +58,21 @@ const CanvasReducer = (estado, accion) => {
       return {
         ...estado,
         seleccionarTodo: !accion.payload,
+      };
+    case 'BANDERA_AGRUPAR':
+      return {
+        ...estado,
+        agrupar: !accion.payload,
+      };
+    case 'AGRUPAR':
+      return {
+        ...estado,
+        grupo: [...estado.grupo, accion.payload],
+      };
+    case 'LIMPIAR_GRUPO':
+      return {
+        ...estado,
+        grupo: [],
       };
     default:
       return estado;

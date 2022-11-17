@@ -18,6 +18,11 @@ const Canvas = ({ actualizarHistorial = () => {} }) => {
     cuadroOrigen,
     actualizarConectar,
     seleccionarTodo,
+    actualizarAgrupar,
+    actualizarGrupo,
+    limpiarGrupo,
+    grupo,
+    agrupar,
   } = useContext(CanvasContext);
 
   let estaPresionado = false;
@@ -54,7 +59,7 @@ const Canvas = ({ actualizarHistorial = () => {} }) => {
     cuadros.map(cuadro =>
       dibujarCuadro(cuadro, contexto.current, seleccionarTodo),
     );
-    if (objetoApuntado) dibujarBorde(objetoApuntado, contexto.current);
+    if (objetoApuntado) dibujarBorde(objetoApuntado, contexto.current, 'black');
     if (conectar && cuadroOrigen) dibujarBorde(cuadroOrigen, contexto.current);
     contexto.current.restore();
   };
@@ -124,8 +129,14 @@ const Canvas = ({ actualizarHistorial = () => {} }) => {
       const validado = validarConexiones(cuadroOrigen, objetoApuntado);
       if (!validado) cuadroOrigen.rl.push(objetoApuntado);
       actualizarOrigen(null);
+      // En caso que quieran que sea conexion continua, omitir actualizar la bandera:
       actualizarConectar(conectar);
     }
+  };
+
+  const agregarAlGrupo = () => {
+    console.log('Se agregara: ', objetoApuntado);
+    return;
   };
 
   const levantarClic = e => {
@@ -134,6 +145,7 @@ const Canvas = ({ actualizarHistorial = () => {} }) => {
       actualizarHistorial(cuadros);
       modificarCuadro(objetoApuntado);
       if (conectar) crearConexion();
+      if (agrupar) agregarAlGrupo();
     }
     objetoApuntado = null;
     estaPresionado = false;

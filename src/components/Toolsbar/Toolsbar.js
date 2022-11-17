@@ -35,7 +35,7 @@ const Toolsbar = ({
       eliminarCuadro();
       actualizarHistorial(
         cuadros.filter(cuadro => {
-          cuadro.rl = cuadro.rl.filter(
+          cuadro.rl = cuadro.rl?.filter(
             relation => relation.id !== cuadroSeleccionado.id,
           );
           return cuadro.id !== cuadroSeleccionado.id;
