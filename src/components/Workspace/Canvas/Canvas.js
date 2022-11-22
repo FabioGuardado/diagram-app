@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useContext } from 'react';
+import AlertsContext from '../../../context/AlertsContext/AlertsContext';
 
 import CanvasContext from '../../../context/CanvasContext/CanvasContext';
 
@@ -8,6 +9,7 @@ import { dibujarCuadro, crearLineas, dibujarBorde } from './canvas.dibujar';
 const Canvas = ({ actualizarHistorial = () => {} }) => {
   const canvas = useRef();
   const contexto = useRef(null);
+  const { mostrarAlerta } = useContext(AlertsContext);
   const {
     cuadros,
     nivelDeZoom,
@@ -111,8 +113,19 @@ const Canvas = ({ actualizarHistorial = () => {} }) => {
   };
 
   const validarConexiones = (origen, destino) => {
+    const llegoAlLimiteDeConexiones =
+      origen?.maxConexiones === origen?.rl?.length;
+
+    if (llegoAlLimiteDeConexiones) {
+      mostrarAlerta(
+        `Este equipo superó el número de conexiones máxima (${origen?.maxConexiones}).`,
+      );
+      return true;
+    }
+
     const conectadoOrigen = origen.rl.find(cuadro => cuadro.id === destino.id);
     const conectadoDestino = destino.rl.find(cuadro => cuadro.id === origen.id);
+
     return conectadoOrigen || conectadoDestino;
   };
 
