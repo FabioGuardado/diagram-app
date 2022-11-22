@@ -12,26 +12,47 @@ const elementos = [
   {
     tipo: 'Almacenamiento',
     nombre: '/img/items/almacenamiento-de-archivos2.png',
+    maxConexiones: 1,
   },
-  { tipo: 'Base de datos', nombre: '/img/items/base-de-datos2.png' },
-  { tipo: 'Circulo', nombre: '/img/items/circulo2.png' },
-  { tipo: 'Enrutador', nombre: '/img/items/enrutador2.png' },
-  { tipo: 'Escritorio', nombre: '/img/items/escritorio2.png' },
-  { tipo: 'Fax', nombre: '/img/items/fax2.png' },
-  { tipo: 'Firewall', nombre: '/img/items/firewall2.png' },
-  { tipo: 'Hub', nombre: '/img/items/hub2.png' },
-  { tipo: 'Impresora', nombre: '/img/items/impresora2.png' },
-  { tipo: 'Laptop', nombre: '/img/items/laptop2.png' },
-  { tipo: 'Modem', nombre: '/img/items/modem2.png' },
-  { tipo: 'Rectangulo', nombre: '/img/items/rectangulo2.png' },
-  { tipo: 'Servidor', nombre: '/img/items/servidor2.png' },
+  {
+    tipo: 'Base de datos',
+    nombre: '/img/items/base-de-datos2.png',
+    maxConexiones: 1,
+  },
+  { tipo: 'Circulo', nombre: '/img/items/circulo2.png', maxConexiones: 1 },
+  { tipo: 'Switch', nombre: '/img/items/switch2.png', maxConexiones: 8 },
+  {
+    tipo: 'Escritorio',
+    nombre: '/img/items/escritorio2.png',
+    maxConexiones: 1,
+  },
+  { tipo: 'Fax', nombre: '/img/items/fax2.png', maxConexiones: 1 },
+  { tipo: 'Firewall', nombre: '/img/items/firewall2.png', maxConexiones: 2 },
+  { tipo: 'Hub', nombre: '/img/items/hub2.png', maxConexiones: 10 },
+  { tipo: 'Impresora', nombre: '/img/items/impresora2.png', maxConexiones: 1 },
+  { tipo: 'Laptop', nombre: '/img/items/laptop2.png', maxConexiones: 1 },
+  {
+    tipo: 'Rectangulo',
+    nombre: '/img/items/rectangulo2.png',
+    maxConexiones: 1,
+  },
+  { tipo: 'Servidor', nombre: '/img/items/servidor2.png', maxConexiones: 1 },
   {
     tipo: 'Servidor en la nube',
     nombre: '/img/items/servidor-en-la-nube2.png',
+    maxConexiones: 1,
   },
-  { tipo: 'Servidor WWW', nombre: '/img/items/servidorwww2.png' },
-  { tipo: 'Telefono', nombre: '/img/items/telefono2.png' },
-  { tipo: 'Router Wifi', nombre: '/img/items/wifi-router2.png' },
+  {
+    tipo: 'Servidor WWW',
+    nombre: '/img/items/servidorwww2.png',
+    maxConexiones: 1,
+  },
+  { tipo: 'Telefono', nombre: '/img/items/telefono2.png', maxConexiones: 1 },
+  {
+    tipo: 'Router Wifi',
+    nombre: '/img/items/wifi-router2.png',
+    maxConexiones: 4,
+  },
 ];
 
 const Sidebar = ({ actualizarHistorial = () => {} }) => {
@@ -40,7 +61,7 @@ const Sidebar = ({ actualizarHistorial = () => {} }) => {
 
   const toggleSidebar = () => setIsSidebarOpened(!isSidebarOpened);
 
-  const handleClick = imagePath => {
+  const handleClick = (imagePath, maxConexiones) => {
     const nuevoCuadro = {
       id: uuid(),
       img: imagePath,
@@ -49,6 +70,7 @@ const Sidebar = ({ actualizarHistorial = () => {} }) => {
       w: 100,
       h: 100,
       rl: [],
+      maxConexiones,
     };
     crearCuadro(nuevoCuadro);
     actualizarHistorial([...cuadros, nuevoCuadro]);
@@ -67,7 +89,9 @@ const Sidebar = ({ actualizarHistorial = () => {} }) => {
             <button
               key={elemento.tipo}
               className="sidebar-panel-item"
-              onClick={() => handleClick(elemento.nombre)}
+              onClick={() =>
+                handleClick(elemento.nombre, elemento.maxConexiones)
+              }
             >
               <img src={elemento.nombre} height="120px" />
             </button>
