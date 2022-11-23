@@ -113,8 +113,9 @@ const Canvas = ({ actualizarHistorial = () => {} }) => {
   };
 
   const validarConexiones = (origen, destino) => {
-    const llegoAlLimiteDeConexiones =
-      origen?.maxConexiones === origen?.rl?.length;
+    const limiteOrigen = origen?.maxConexiones === origen?.rl?.length;
+    const limiteDestino = destino?.maxConexiones === destino?.rl?.length;
+    const llegoAlLimiteDeConexiones = limiteOrigen || limiteDestino;
 
     if (llegoAlLimiteDeConexiones) {
       mostrarAlerta(
