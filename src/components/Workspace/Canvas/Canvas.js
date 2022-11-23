@@ -118,8 +118,11 @@ const Canvas = ({ actualizarHistorial = () => {} }) => {
     const llegoAlLimiteDeConexiones = limiteOrigen || limiteDestino;
 
     if (llegoAlLimiteDeConexiones) {
+      const maxConexionesParaAlerta = limiteOrigen
+        ? origen?.maxConexiones
+        : destino?.maxConexiones;
       mostrarAlerta(
-        `Este equipo superó el número de conexiones máxima (${origen?.maxConexiones}).`,
+        `Este equipo superó el número de conexiones máxima (${maxConexionesParaAlerta}).`,
       );
       return true;
     }
