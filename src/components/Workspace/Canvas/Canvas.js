@@ -113,9 +113,16 @@ const Canvas = ({ actualizarHistorial = () => {} }) => {
   };
 
   const validarConexiones = (origen, destino) => {
+    const conexionesVinculadas = cuadros.filter(cuadro =>
+      cuadro.rl.find(
+        relation => relation.id === destino.id || relation.id === origen.id,
+      ),
+    );
+
     const limiteOrigen = origen?.maxConexiones === origen?.rl?.length;
     const limiteDestino = destino?.maxConexiones === destino?.rl?.length;
-    const llegoAlLimiteDeConexiones = limiteOrigen || limiteDestino;
+    const llegoAlLimiteDeConexiones =
+      limiteOrigen || limiteDestino || conexionesVinculadas.length;
 
     if (llegoAlLimiteDeConexiones) {
       const maxConexionesParaAlerta = limiteOrigen
