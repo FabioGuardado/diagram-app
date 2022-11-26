@@ -10,6 +10,7 @@ const ESTADO_INICIAL = {
   seleccionarTodo: false,
   agrupar: false,
   grupo: [],
+  idGrupo: '',
 };
 
 const CanvasProvider = ({ children }) => {
@@ -60,12 +61,16 @@ const CanvasProvider = ({ children }) => {
     dispatch({ tipo: 'BANDERA_AGRUPAR', payload: valor });
   };
 
-  const actualizarGrupo = grupo => {
-    dispatch({ tipo: 'AGRUPAR', payload: grupo });
+  const actualizarGrupo = cuadro => {
+    dispatch({ tipo: 'AGRUPAR', payload: cuadro });
   };
 
   const limpiarGrupo = () => {
     dispatch({ tipo: 'LIMPIAR_GRUPO' });
+  };
+
+  const actualizarIdGrupo = id => {
+    dispatch({ tipo: 'ACTUALIZAR_ID_GRUPO', payload: id });
   };
 
   return (
@@ -85,6 +90,7 @@ const CanvasProvider = ({ children }) => {
         actualizarAgrupar,
         actualizarGrupo,
         limpiarGrupo,
+        actualizarIdGrupo,
       }}
     >
       {children}

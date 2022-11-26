@@ -73,6 +73,12 @@ const CanvasReducer = (estado, accion) => {
       return {
         ...estado,
         grupo: [],
+        idGrupo: '',
+      };
+    case 'ACTUALIZAR_ID_GRUPO':
+      return {
+        ...estado,
+        idGrupo: accion.payload,
       };
     default:
       return estado;

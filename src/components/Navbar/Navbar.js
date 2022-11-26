@@ -11,7 +11,13 @@ const Navbar = () => {
   const canvas = document.getElementById('canvas');
   const [isMenuArchivoOpened, setIsMenuArchivoOpened] = useState(false);
   const [isMenuEditarOpened, setIsMenuEditarOpened] = useState(false);
-  const { seleccionarTodo, actualizarSeleccionar } = useContext(CanvasContext);
+  const {
+    seleccionarTodo,
+    actualizarSeleccionar,
+    actualizarAgrupar,
+    agrupar,
+    limpiarGrupo,
+  } = useContext(CanvasContext);
 
   const toggleMenuArchivoOpened = () =>
     setIsMenuArchivoOpened(!isMenuArchivoOpened);
@@ -58,6 +64,15 @@ const Navbar = () => {
 
   const selecciona = () => {
     actualizarSeleccionar(seleccionarTodo);
+  };
+
+  const agrupa = () => {
+    limpiarGrupo();
+    actualizarAgrupar(agrupar);
+  };
+
+  const desagrupa = () => {
+    // actualizarAgrupar(agrupar);
   };
 
   return (
@@ -108,8 +123,12 @@ const Navbar = () => {
                 <li>
                   <a onClick={selecciona}>Seleccionar todo</a>
                 </li>
-                <li>Agrupar</li>
-                <li>Desagrupar</li>
+                <li>
+                  <a onClick={agrupa}>Agrupar</a>
+                </li>
+                <li>
+                  <a onClick={desagrupa}>Desagrupar</a>
+                </li>
               </ul>
             </div>
           </div>

@@ -1,10 +1,9 @@
 import React, { useRef, useEffect, useContext } from 'react';
 import AlertsContext from '../../../context/AlertsContext/AlertsContext';
-
 import CanvasContext from '../../../context/CanvasContext/CanvasContext';
-
 import './Canvas.css';
 import { dibujarCuadro, crearLineas, dibujarBorde } from './canvas.dibujar';
+import { v4 as uuid } from 'uuid';
 
 const Canvas = ({ actualizarHistorial = () => {} }) => {
   const canvas = useRef();
@@ -20,11 +19,11 @@ const Canvas = ({ actualizarHistorial = () => {} }) => {
     cuadroOrigen,
     actualizarConectar,
     seleccionarTodo,
-    actualizarAgrupar,
     actualizarGrupo,
-    limpiarGrupo,
     grupo,
     agrupar,
+    idGrupo,
+    actualizarIdGrupo,
   } = useContext(CanvasContext);
 
   let estaPresionado = false;
@@ -44,10 +43,11 @@ const Canvas = ({ actualizarHistorial = () => {} }) => {
 
   useEffect(() => {
     if (contexto.current) dibujar();
-  }, [cuadros, nivelDeZoom, conectar, seleccionarTodo]);
+  }, [cuadros, nivelDeZoom, conectar, seleccionarTodo, agrupar]);
 
   // Dibujar los cuadros
   const dibujar = () => {
+    if (!idGrupo) actualizarIdGrupo(uuid());
     contexto.current.save();
     contexto.current.clearRect(
       0,
@@ -61,9 +61,20 @@ const Canvas = ({ actualizarHistorial = () => {} }) => {
     cuadros.map(cuadro =>
       dibujarCuadro(cuadro, contexto.current, seleccionarTodo),
     );
-    if (objetoApuntado) dibujarBorde(objetoApuntado, contexto.current, 'black');
+    grupo.map(cuadro => dibujarBorde(cuadro, contexto.current, 'red'));
+    if (objetoApuntado) dibujarContexto();
     if (conectar && cuadroOrigen) dibujarBorde(cuadroOrigen, contexto.current);
     contexto.current.restore();
+  };
+
+  const dibujarContexto = () => {
+    const { idGrupo: idGrupoApuntado } = objetoApuntado;
+    if (idGrupoApuntado) {
+      cuadros.map(cuadro => {
+        if (cuadro.idGrupo === idGrupoApuntado)
+          dibujarBorde(cuadro, contexto.current, 'black');
+      });
+    } else dibujarBorde(objetoApuntado, contexto.current, 'black');
   };
 
   // Identificar el evento clic en la figura
@@ -100,8 +111,17 @@ const Canvas = ({ actualizarHistorial = () => {} }) => {
     });
   };
 
+  const moverPorGrupo = (dx, dy, idGrupo) => {
+    cuadros.map(cuadro => {
+      if (cuadro?.idGrupo === idGrupo) {
+        cuadro.x += dx;
+        cuadro.y += dy;
+      }
+    });
+  };
+
   const moverMouse = e => {
-    if (!estaPresionado || conectar) return;
+    if (!estaPresionado || conectar || agrupar) return;
     const mouseX = parseInt(e.nativeEvent.offsetX - canvas.current.clientLeft);
     const mouseY = parseInt(e.nativeEvent.offsetY - canvas.current.clientTop);
     const dx = (mouseX - inicioX) / nivelDeZoom;
@@ -109,7 +129,9 @@ const Canvas = ({ actualizarHistorial = () => {} }) => {
     inicioX = mouseX;
     inicioY = mouseY;
     if (seleccionarTodo) moverTodos(dx, dy);
-    else {
+    else if (objetoApuntado.idGrupo) {
+      moverPorGrupo(dx, dy, objetoApuntado.idGrupo);
+    } else {
       objetoApuntado.x += dx;
       objetoApuntado.y += dy;
     }
@@ -160,7 +182,13 @@ const Canvas = ({ actualizarHistorial = () => {} }) => {
   };
 
   const agregarAlGrupo = () => {
-    console.log('Se agregara: ', objetoApuntado);
+    const cuadroAgrupado =
+      grupo.find(cuadro => cuadro.id === objetoApuntado.id) ||
+      objetoApuntado.idGrupo;
+    if (!cuadroAgrupado) {
+      objetoApuntado.idGrupo = idGrupo;
+      actualizarGrupo(objetoApuntado);
+    }
     return;
   };
 
