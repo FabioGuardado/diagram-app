@@ -117,17 +117,18 @@ const Canvas = ({ actualizarHistorial = () => {} }) => {
     dibujar();
   };
 
-  const validarConexiones = (origen, destino) => {
-    const conexionesVinculadas = cuadros.filter(cuadro =>
-      cuadro.rl.find(
-        relation => relation.id === destino.id || relation.id === origen.id,
-      ),
+  const calcularLimite = buscando => {
+    const vinculados = cuadros.filter(cuadro =>
+      cuadro.rl.find(relation => relation.id === buscando.id),
     );
+    const totalConexiones = buscando?.rl?.length + vinculados.length;
+    return buscando?.maxConexiones <= totalConexiones;
+  };
 
-    const limiteOrigen = origen?.maxConexiones === origen?.rl?.length;
-    const limiteDestino = destino?.maxConexiones === destino?.rl?.length;
-    const llegoAlLimiteDeConexiones =
-      limiteOrigen || limiteDestino || conexionesVinculadas.length;
+  const validarConexiones = (origen, destino) => {
+    const limiteOrigen = calcularLimite(origen);
+    const limiteDestino = calcularLimite(destino);
+    const llegoAlLimiteDeConexiones = limiteOrigen || limiteDestino;
 
     if (llegoAlLimiteDeConexiones) {
       const maxConexionesParaAlerta = limiteOrigen
