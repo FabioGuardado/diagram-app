@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useContext } from 'react';
+import AlertsContext from '../../../context/AlertsContext/AlertsContext';
 
 import CanvasContext from '../../../context/CanvasContext/CanvasContext';
 
@@ -8,6 +9,7 @@ import { dibujarCuadro, crearLineas, dibujarBorde } from './canvas.dibujar';
 const Canvas = ({ actualizarHistorial = () => {} }) => {
   const canvas = useRef();
   const contexto = useRef(null);
+  const { mostrarAlerta } = useContext(AlertsContext);
   const {
     cuadros,
     nivelDeZoom,
@@ -116,8 +118,30 @@ const Canvas = ({ actualizarHistorial = () => {} }) => {
   };
 
   const validarConexiones = (origen, destino) => {
+    const conexionesVinculadas = cuadros.filter(cuadro =>
+      cuadro.rl.find(
+        relation => relation.id === destino.id || relation.id === origen.id,
+      ),
+    );
+
+    const limiteOrigen = origen?.maxConexiones === origen?.rl?.length;
+    const limiteDestino = destino?.maxConexiones === destino?.rl?.length;
+    const llegoAlLimiteDeConexiones =
+      limiteOrigen || limiteDestino || conexionesVinculadas.length;
+
+    if (llegoAlLimiteDeConexiones) {
+      const maxConexionesParaAlerta = limiteOrigen
+        ? origen?.maxConexiones
+        : destino?.maxConexiones;
+      mostrarAlerta(
+        `Este equipo superó el número de conexiones máxima (${maxConexionesParaAlerta}).`,
+      );
+      return true;
+    }
+
     const conectadoOrigen = origen.rl.find(cuadro => cuadro.id === destino.id);
     const conectadoDestino = destino.rl.find(cuadro => cuadro.id === origen.id);
+
     return conectadoOrigen || conectadoDestino;
   };
 
