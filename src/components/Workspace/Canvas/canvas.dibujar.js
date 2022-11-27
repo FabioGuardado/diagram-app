@@ -1,23 +1,27 @@
 // Funcion para dibujar el cuadro
-export const dibujarCuadro = (info, contexto) => {
-  const { x, y, w, h, r1, text, img } = info;
-  // contexto.beginPath();
-  // contexto.lineWidth = '2';
-  // contexto.strokeStyle = 'blue';
-  // contexto.rect(x, y, w, h);
-  // contexto.stroke();
-
-  if (text) {
-    dibujarPropTexto({ x, y, text: text }, contexto);
-  } else if (img) {
-    dibujarImagen(info, contexto);
-    if (r1?.length) r1?.map(cuadro => calcularLinea(info, cuadro, contexto));
-  }
+export const dibujarCuadro = (info, contexto, todos = false) => {
+  const { x, y, text, img, h } = info;
+  if (todos) dibujarBorde(info, contexto);
+  if (text) dibujarPropTexto({ x, y: y + h, text }, contexto);
+  if (img) dibujarImagen(info, contexto);
 };
 
-const calcularLinea = (origen, destino, contexto) => {
-  if (!destino) return;
+export const dibujarBorde = (info, contexto, color = 'blue') => {
+  const { x, y, w, h } = info;
+  contexto.beginPath();
+  contexto.lineWidth = '1';
+  contexto.strokeStyle = color;
+  contexto.rect(x, y, w, h);
+  contexto.stroke();
+};
 
+// Funcion para dibujar las lineas
+export const crearLineas = (origen, contexto) => {
+  origen.rl?.map(cuadro => calcularLinea(origen, cuadro, contexto));
+};
+
+export const calcularLinea = (origen, destino, contexto) => {
+  if (!destino) return;
   const { x: forma1X, y: forma1Y, w: origenW, h: origenH } = origen;
   const { x: forma2X, y: forma2Y, w: destinoW, h: destinoH } = destino;
   const linea = {

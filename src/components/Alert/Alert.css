@@ -1,0 +1,29 @@
+div.alerta {
+  position: absolute;
+  padding: 1rem 1.5rem;
+  top: 30px;
+  right: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #f46c6c;
+  border: none;
+  border-radius: 5px;
+
+  box-shadow: 10px 10px 41px 7px rgba(0, 0, 0, 0.24);
+  -webkit-box-shadow: 10px 10px 41px 7px rgba(0, 0, 0, 0.24);
+  -moz-box-shadow: 10px 10px 41px 7px rgba(0, 0, 0, 0.24);
+}
+
+div.alerta > p.alerta-contenido {
+  margin-right: 20px;
+  font-size: 1rem;
+}
+
+div.alerta > button.alerta-boton-cerrar {
+  font-size: 1.2rem;
+  font-weight: 700;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}

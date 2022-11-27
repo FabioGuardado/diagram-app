@@ -6,6 +6,12 @@ const ESTADO_INICIAL = {
   cuadros: [],
   cuadroSeleccionado: null,
   nivelDeZoom: 1,
+  conectar: false,
+  seleccionarTodo: false,
+  agrupar: false,
+  grupo: [],
+  idGrupo: '',
+  desagrupar: false,
 };
 
 const CanvasProvider = ({ children }) => {
@@ -24,6 +30,7 @@ const CanvasProvider = ({ children }) => {
   };
 
   const duplicarCuadro = cuadroDuplicado => {
+    cuadroDuplicado.rl = [];
     dispatch({ tipo: 'DUPLICAR_CUADRO', payload: cuadroDuplicado });
   };
 
@@ -39,6 +46,38 @@ const CanvasProvider = ({ children }) => {
     dispatch({ tipo: 'RESTAURAR_ESTADO', payload: estado });
   };
 
+  const actualizarConectar = valor => {
+    dispatch({ tipo: 'CONECTAR_CUADROS', payload: valor });
+  };
+
+  const actualizarOrigen = cuadroOrigen => {
+    dispatch({ tipo: 'ACTUALIZAR_ORIGEN', payload: cuadroOrigen });
+  };
+
+  const actualizarSeleccionar = valor => {
+    dispatch({ tipo: 'SELECCIONAR_TODOS', payload: valor });
+  };
+
+  const actualizarAgrupar = valor => {
+    dispatch({ tipo: 'BANDERA_AGRUPAR', payload: valor });
+  };
+
+  const actualizarGrupo = cuadro => {
+    dispatch({ tipo: 'AGRUPAR', payload: cuadro });
+  };
+
+  const limpiarGrupo = () => {
+    dispatch({ tipo: 'LIMPIAR_GRUPO' });
+  };
+
+  const actualizarIdGrupo = id => {
+    dispatch({ tipo: 'ACTUALIZAR_ID_GRUPO', payload: id });
+  };
+
+  const actualizarDesAgrupar = valor => {
+    dispatch({ tipo: 'DESAGRUPAR', payload: valor });
+  };
+
   return (
     <CanvasContext.Provider
       value={{
@@ -50,6 +89,14 @@ const CanvasProvider = ({ children }) => {
         seleccionarCuadro,
         modificarZoom,
         restaurarEstado,
+        actualizarConectar,
+        actualizarOrigen,
+        actualizarSeleccionar,
+        actualizarAgrupar,
+        actualizarGrupo,
+        limpiarGrupo,
+        actualizarIdGrupo,
+        actualizarDesAgrupar,
       }}
     >
       {children}
