@@ -1,10 +1,9 @@
 import React, { useRef, useEffect, useContext } from 'react';
 import AlertsContext from '../../../context/AlertsContext/AlertsContext';
-
 import CanvasContext from '../../../context/CanvasContext/CanvasContext';
-
 import './Canvas.css';
 import { dibujarCuadro, crearLineas, dibujarBorde } from './canvas.dibujar';
+import { v4 as uuid } from 'uuid';
 
 const Canvas = ({ actualizarHistorial = () => {} }) => {
   const canvas = useRef();
@@ -20,6 +19,13 @@ const Canvas = ({ actualizarHistorial = () => {} }) => {
     cuadroOrigen,
     actualizarConectar,
     seleccionarTodo,
+    actualizarGrupo,
+    grupo,
+    agrupar,
+    idGrupo,
+    actualizarIdGrupo,
+    desagrupar,
+    actualizarDesAgrupar,
   } = useContext(CanvasContext);
 
   let estaPresionado = false;
@@ -39,10 +45,11 @@ const Canvas = ({ actualizarHistorial = () => {} }) => {
 
   useEffect(() => {
     if (contexto.current) dibujar();
-  }, [cuadros, nivelDeZoom, conectar, seleccionarTodo]);
+  }, [cuadros, nivelDeZoom, conectar, seleccionarTodo, agrupar, desagrupar]);
 
   // Dibujar los cuadros
   const dibujar = () => {
+    if (!idGrupo) actualizarIdGrupo(uuid());
     contexto.current.save();
     contexto.current.clearRect(
       0,
@@ -56,9 +63,20 @@ const Canvas = ({ actualizarHistorial = () => {} }) => {
     cuadros.map(cuadro =>
       dibujarCuadro(cuadro, contexto.current, seleccionarTodo),
     );
-    if (objetoApuntado) dibujarBorde(objetoApuntado, contexto.current);
+    grupo.map(cuadro => dibujarBorde(cuadro, contexto.current, 'red'));
+    if (objetoApuntado) dibujarContexto();
     if (conectar && cuadroOrigen) dibujarBorde(cuadroOrigen, contexto.current);
     contexto.current.restore();
+  };
+
+  const dibujarContexto = () => {
+    const { idGrupo: idGrupoApuntado } = objetoApuntado;
+    if (idGrupoApuntado) {
+      cuadros.map(cuadro => {
+        if (cuadro.idGrupo === idGrupoApuntado)
+          dibujarBorde(cuadro, contexto.current, 'black');
+      });
+    } else dibujarBorde(objetoApuntado, contexto.current, 'black');
   };
 
   // Identificar el evento clic en la figura
@@ -95,8 +113,17 @@ const Canvas = ({ actualizarHistorial = () => {} }) => {
     });
   };
 
+  const moverPorGrupo = (dx, dy, idGrupo) => {
+    cuadros.map(cuadro => {
+      if (cuadro?.idGrupo === idGrupo) {
+        cuadro.x += dx;
+        cuadro.y += dy;
+      }
+    });
+  };
+
   const moverMouse = e => {
-    if (!estaPresionado || conectar) return;
+    if (!estaPresionado || conectar || agrupar) return;
     const mouseX = parseInt(e.nativeEvent.offsetX - canvas.current.clientLeft);
     const mouseY = parseInt(e.nativeEvent.offsetY - canvas.current.clientTop);
     const dx = (mouseX - inicioX) / nivelDeZoom;
@@ -104,7 +131,9 @@ const Canvas = ({ actualizarHistorial = () => {} }) => {
     inicioX = mouseX;
     inicioY = mouseY;
     if (seleccionarTodo) moverTodos(dx, dy);
-    else {
+    else if (objetoApuntado.idGrupo) {
+      moverPorGrupo(dx, dy, objetoApuntado.idGrupo);
+    } else {
       objetoApuntado.x += dx;
       objetoApuntado.y += dy;
     }
@@ -112,17 +141,18 @@ const Canvas = ({ actualizarHistorial = () => {} }) => {
     dibujar();
   };
 
-  const validarConexiones = (origen, destino) => {
-    const conexionesVinculadas = cuadros.filter(cuadro =>
-      cuadro.rl.find(
-        relation => relation.id === destino.id || relation.id === origen.id,
-      ),
+  const calcularLimite = buscando => {
+    const vinculados = cuadros.filter(cuadro =>
+      cuadro.rl.find(relation => relation.id === buscando.id),
     );
+    const totalConexiones = buscando?.rl?.length + vinculados.length;
+    return buscando?.maxConexiones <= totalConexiones;
+  };
 
-    const limiteOrigen = origen?.maxConexiones === origen?.rl?.length;
-    const limiteDestino = destino?.maxConexiones === destino?.rl?.length;
-    const llegoAlLimiteDeConexiones =
-      limiteOrigen || limiteDestino || conexionesVinculadas.length;
+  const validarConexiones = (origen, destino) => {
+    const limiteOrigen = calcularLimite(origen);
+    const limiteDestino = calcularLimite(destino);
+    const llegoAlLimiteDeConexiones = limiteOrigen || limiteDestino;
 
     if (llegoAlLimiteDeConexiones) {
       const maxConexionesParaAlerta = limiteOrigen
@@ -148,8 +178,28 @@ const Canvas = ({ actualizarHistorial = () => {} }) => {
       const validado = validarConexiones(cuadroOrigen, objetoApuntado);
       if (!validado) cuadroOrigen.rl.push(objetoApuntado);
       actualizarOrigen(null);
+      // En caso que quieran que sea conexion continua, omitir actualizar la bandera:
       actualizarConectar(conectar);
     }
+  };
+
+  const agregarAlGrupo = () => {
+    const cuadroAgrupado =
+      grupo.find(cuadro => cuadro.id === objetoApuntado.id) ||
+      objetoApuntado.idGrupo;
+    if (!cuadroAgrupado) {
+      actualizarGrupo(objetoApuntado);
+    }
+    return;
+  };
+
+  const eliminarGrupo = () => {
+    const { idGrupo: id } = objetoApuntado;
+    cuadros.map(cuadro => {
+      if (cuadro.idGrupo === id) cuadro.idGrupo = '';
+    });
+    actualizarDesAgrupar(desagrupar);
+    return;
   };
 
   const levantarClic = e => {
@@ -158,6 +208,8 @@ const Canvas = ({ actualizarHistorial = () => {} }) => {
       actualizarHistorial(cuadros);
       modificarCuadro(objetoApuntado);
       if (conectar) crearConexion();
+      if (agrupar) agregarAlGrupo();
+      if (desagrupar) eliminarGrupo();
     }
     objetoApuntado = null;
     estaPresionado = false;

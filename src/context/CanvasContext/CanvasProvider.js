@@ -6,9 +6,12 @@ const ESTADO_INICIAL = {
   cuadros: [],
   cuadroSeleccionado: null,
   nivelDeZoom: 1,
-  cuadroOrigen: null,
   conectar: false,
   seleccionarTodo: false,
+  agrupar: false,
+  grupo: [],
+  idGrupo: '',
+  desagrupar: false,
 };
 
 const CanvasProvider = ({ children }) => {
@@ -55,6 +58,26 @@ const CanvasProvider = ({ children }) => {
     dispatch({ tipo: 'SELECCIONAR_TODOS', payload: valor });
   };
 
+  const actualizarAgrupar = valor => {
+    dispatch({ tipo: 'BANDERA_AGRUPAR', payload: valor });
+  };
+
+  const actualizarGrupo = cuadro => {
+    dispatch({ tipo: 'AGRUPAR', payload: cuadro });
+  };
+
+  const limpiarGrupo = () => {
+    dispatch({ tipo: 'LIMPIAR_GRUPO' });
+  };
+
+  const actualizarIdGrupo = id => {
+    dispatch({ tipo: 'ACTUALIZAR_ID_GRUPO', payload: id });
+  };
+
+  const actualizarDesAgrupar = valor => {
+    dispatch({ tipo: 'DESAGRUPAR', payload: valor });
+  };
+
   return (
     <CanvasContext.Provider
       value={{
@@ -69,6 +92,11 @@ const CanvasProvider = ({ children }) => {
         actualizarConectar,
         actualizarOrigen,
         actualizarSeleccionar,
+        actualizarAgrupar,
+        actualizarGrupo,
+        limpiarGrupo,
+        actualizarIdGrupo,
+        actualizarDesAgrupar,
       }}
     >
       {children}

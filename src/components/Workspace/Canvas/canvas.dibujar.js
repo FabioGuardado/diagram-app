@@ -6,11 +6,11 @@ export const dibujarCuadro = (info, contexto, todos = false) => {
   if (img) dibujarImagen(info, contexto);
 };
 
-export const dibujarBorde = (info, contexto) => {
+export const dibujarBorde = (info, contexto, color = 'blue') => {
   const { x, y, w, h } = info;
   contexto.beginPath();
-  contexto.lineWidth = '3';
-  contexto.strokeStyle = 'blue';
+  contexto.lineWidth = '1';
+  contexto.strokeStyle = color;
   contexto.rect(x, y, w, h);
   contexto.stroke();
 };
