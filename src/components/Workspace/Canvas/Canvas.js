@@ -24,6 +24,8 @@ const Canvas = ({ actualizarHistorial = () => {} }) => {
     agrupar,
     idGrupo,
     actualizarIdGrupo,
+    desagrupar,
+    actualizarDesAgrupar,
   } = useContext(CanvasContext);
 
   let estaPresionado = false;
@@ -43,7 +45,7 @@ const Canvas = ({ actualizarHistorial = () => {} }) => {
 
   useEffect(() => {
     if (contexto.current) dibujar();
-  }, [cuadros, nivelDeZoom, conectar, seleccionarTodo, agrupar]);
+  }, [cuadros, nivelDeZoom, conectar, seleccionarTodo, agrupar, desagrupar]);
 
   // Dibujar los cuadros
   const dibujar = () => {
@@ -192,6 +194,15 @@ const Canvas = ({ actualizarHistorial = () => {} }) => {
     return;
   };
 
+  const eliminarGrupo = () => {
+    const { idGrupo: id } = objetoApuntado;
+    cuadros.map(cuadro => {
+      if (cuadro.idGrupo === id) cuadro.idGrupo = '';
+    });
+    actualizarDesAgrupar(desagrupar);
+    return;
+  };
+
   const levantarClic = e => {
     if (objetoApuntado) {
       seleccionarCuadro(objetoApuntado);
@@ -199,6 +210,7 @@ const Canvas = ({ actualizarHistorial = () => {} }) => {
       modificarCuadro(objetoApuntado);
       if (conectar) crearConexion();
       if (agrupar) agregarAlGrupo();
+      if (desagrupar) eliminarGrupo();
     }
     objetoApuntado = null;
     estaPresionado = false;

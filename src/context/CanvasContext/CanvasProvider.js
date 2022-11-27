@@ -11,6 +11,7 @@ const ESTADO_INICIAL = {
   agrupar: false,
   grupo: [],
   idGrupo: '',
+  desagrupar: false,
 };
 
 const CanvasProvider = ({ children }) => {
@@ -73,6 +74,10 @@ const CanvasProvider = ({ children }) => {
     dispatch({ tipo: 'ACTUALIZAR_ID_GRUPO', payload: id });
   };
 
+  const actualizarDesAgrupar = valor => {
+    dispatch({ tipo: 'DESAGRUPAR', payload: valor });
+  };
+
   return (
     <CanvasContext.Provider
       value={{
@@ -91,6 +96,7 @@ const CanvasProvider = ({ children }) => {
         actualizarGrupo,
         limpiarGrupo,
         actualizarIdGrupo,
+        actualizarDesAgrupar,
       }}
     >
       {children}

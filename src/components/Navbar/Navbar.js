@@ -17,6 +17,8 @@ const Navbar = () => {
     actualizarAgrupar,
     agrupar,
     limpiarGrupo,
+    desagrupar,
+    actualizarDesAgrupar,
   } = useContext(CanvasContext);
 
   const toggleMenuArchivoOpened = () =>
@@ -72,7 +74,7 @@ const Navbar = () => {
   };
 
   const desagrupa = () => {
-    // actualizarAgrupar(agrupar);
+    actualizarDesAgrupar(desagrupar);
   };
 
   return (

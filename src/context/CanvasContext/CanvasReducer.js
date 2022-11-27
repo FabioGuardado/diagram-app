@@ -80,6 +80,11 @@ const CanvasReducer = (estado, accion) => {
         ...estado,
         idGrupo: accion.payload,
       };
+    case 'DESAGRUPAR':
+      return {
+        ...estado,
+        desagrupar: !accion.payload,
+      };
     default:
       return estado;
   }

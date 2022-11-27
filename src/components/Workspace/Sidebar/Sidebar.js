@@ -71,6 +71,7 @@ const Sidebar = ({ actualizarHistorial = () => {} }) => {
       h: 100,
       rl: [],
       maxConexiones,
+      idGrupo: '',
     };
     crearCuadro(nuevoCuadro);
     actualizarHistorial([...cuadros, nuevoCuadro]);
