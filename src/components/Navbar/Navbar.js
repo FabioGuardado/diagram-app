@@ -47,9 +47,11 @@ const Navbar = () => {
 
   const guardarComoPDF = () => {
     const context = canvas.getContext('2d');
+    context.save();
     context.globalCompositeOperation = 'destination-over';
     context.fillStyle = '#cad5e8';
     context.fillRect(0, 0, canvas.width, canvas.height);
+    context.restore();
 
     const imageURL = canvas.toDataURL('image/jpg');
 

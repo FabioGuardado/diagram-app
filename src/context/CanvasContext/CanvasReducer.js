@@ -70,6 +70,8 @@ const CanvasReducer = (estado, accion) => {
         grupo: [...estado.grupo, accion.payload],
       };
     case 'LIMPIAR_GRUPO':
+      const { grupo, idGrupo } = estado;
+      if (grupo.length > 1) grupo.map(element => (element.idGrupo = idGrupo));
       return {
         ...estado,
         grupo: [],

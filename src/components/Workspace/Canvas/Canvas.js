@@ -188,7 +188,6 @@ const Canvas = ({ actualizarHistorial = () => {} }) => {
       grupo.find(cuadro => cuadro.id === objetoApuntado.id) ||
       objetoApuntado.idGrupo;
     if (!cuadroAgrupado) {
-      objetoApuntado.idGrupo = idGrupo;
       actualizarGrupo(objetoApuntado);
     }
     return;
