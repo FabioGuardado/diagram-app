@@ -143,7 +143,7 @@ const Canvas = ({ actualizarHistorial = () => {} }) => {
 
   const calcularLimite = buscando => {
     const vinculados = cuadros.filter(cuadro =>
-      cuadro.rl.find(relation => relation.id === buscando.id),
+      cuadro.rl?.find(relation => relation.id === buscando.id),
     );
     const totalConexiones = buscando?.rl?.length + vinculados.length;
     return buscando?.maxConexiones <= totalConexiones;
