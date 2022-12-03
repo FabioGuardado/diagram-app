@@ -178,7 +178,6 @@ const Canvas = ({ actualizarHistorial = () => {} }) => {
       const validado = validarConexiones(cuadroOrigen, objetoApuntado);
       if (!validado) cuadroOrigen.rl.push(objetoApuntado);
       actualizarOrigen(null);
-      // En caso que quieran que sea conexion continua, omitir actualizar la bandera:
       actualizarConectar(conectar);
     }
   };
