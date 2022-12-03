@@ -31,6 +31,7 @@ const CanvasProvider = ({ children }) => {
 
   const duplicarCuadro = cuadroDuplicado => {
     cuadroDuplicado.rl = [];
+    cuadroDuplicado.idGrupo = '';
     dispatch({ tipo: 'DUPLICAR_CUADRO', payload: cuadroDuplicado });
   };
 

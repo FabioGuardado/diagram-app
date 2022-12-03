@@ -143,7 +143,7 @@ const Canvas = ({ actualizarHistorial = () => {} }) => {
 
   const calcularLimite = buscando => {
     const vinculados = cuadros.filter(cuadro =>
-      cuadro.rl.find(relation => relation.id === buscando.id),
+      cuadro.rl?.find(relation => relation.id === buscando.id),
     );
     const totalConexiones = buscando?.rl?.length + vinculados.length;
     return buscando?.maxConexiones <= totalConexiones;
@@ -178,7 +178,6 @@ const Canvas = ({ actualizarHistorial = () => {} }) => {
       const validado = validarConexiones(cuadroOrigen, objetoApuntado);
       if (!validado) cuadroOrigen.rl.push(objetoApuntado);
       actualizarOrigen(null);
-      // En caso que quieran que sea conexion continua, omitir actualizar la bandera:
       actualizarConectar(conectar);
     }
   };
